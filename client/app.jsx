@@ -1,8 +1,15 @@
 import React from 'react';
-import RunnerFuze from './pages/splash';
+import Splash from './pages/splash';
 
 export default class App extends React.Component {
+
+  componentDidMount() {
+    window.addEventListener('hashchange', event => {
+
+    });
+  }
+
   render() {
-    return <RunnerFuze />;
+    return <Splash home={this.props.home} run={this.props.run} />;
   }
 }
