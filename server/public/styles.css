@@ -1,0 +1,37 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+input,
+label,
+textarea {
+  font-family: "Josefin Sans", sans-serif;
+}
+
+.container {
+  background-image: url("images/splash.webp");
+  background-position: 85% 76%;
+  width: 100vw;
+  height: 100vh;
+}
+
+.container h1 {
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 5rem;
+}
+
+.container .radial-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(#0000, rgba(0, 0, 0, 0.354));
+  background-clip: content-box;
+}

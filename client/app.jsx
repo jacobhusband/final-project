@@ -1,8 +1,8 @@
 import React from 'react';
-import Home from './pages/home';
+import RunnerFuze from './pages/splash';
 
 export default class App extends React.Component {
   render() {
-    return <Home />;
+    return <RunnerFuze />;
   }
 }
