@@ -67,6 +67,11 @@ textarea {
   width: 7rem;
 }
 
+.camera-container .buttons .check,
+.camera-container .buttons .retake {
+  margin-top: 0.5rem;
+}
+
 .camera-container button {
   margin: 0.35rem;
   margin-top: 0;

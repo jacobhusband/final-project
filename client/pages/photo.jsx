@@ -16,6 +16,7 @@ export default class Photo extends React.Component {
       preRunImage: false
     };
     this.storeImage = this.storeImage.bind(this);
+    this.retakePhoto = this.retakePhoto.bind(this);
   }
 
   storeImage(image) {
@@ -41,18 +42,37 @@ export default class Photo extends React.Component {
     </Webcam>;
   }
 
+  retakePhoto() {
+    this.setState({
+      preRunImage: null
+    });
+  }
+
+  PhotoTaken() {
+    const { check, retake } = this.props;
+    return (
+      <>
+        <img src={this.state.preRunImage} alt="Pre Run Image" />
+        <PictureButtons check={check} retake={retake} retakePhoto={this.retakePhoto} />
+      </>
+    );
+  }
+
   render() {
     let image;
+    let headerText;
     if (this.state.preRunImage) {
-      image = <img src={this.state.preRunImage} alt="Pre Run Image" />;
+      image = this.PhotoTaken();
+      headerText = <p className='lh-lg h4 fw-bold mt-5 mb-5'>Look good?</p>;
     } else {
       image = this.WebcamCapture();
+      headerText = <p className='lh-lg h4 fw-bold mt-5 mb-5'>Take a pre-exercise photo</p>;
     }
 
     return (
       <div className='text-center'>
         <Navbar home={this.props.home} />
-        <p className='lh-lg h4 fw-bold mt-5 mb-5'>Take a pre-exercise photo</p>
+        {headerText}
         <div className='camera-container'>
           {image}
         </div>
@@ -83,6 +103,26 @@ function CameraButtons(props) {
         onClick={() => {
         }}
       >{props.swap}</button>
+    </div>
+  );
+}
+
+function PictureButtons(props) {
+  return (
+    <div className='buttons'>
+      <button
+        type="button"
+        className='check btn btn-primary'
+        onClick={() => {
+        }}
+      >{props.check}</button>
+      <button
+        type="button"
+        className='retake btn btn-primary'
+        onClick={() => {
+          props.retakePhoto();
+        }}
+      >{props.retake}</button>
     </div>
   );
 }

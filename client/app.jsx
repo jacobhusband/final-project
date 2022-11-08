@@ -34,7 +34,7 @@ export default class App extends React.Component {
       return <Home home={this.props.home} />;
     }
     if (route.path === 'photo') {
-      return <Photo home={this.props.home} flash={this.props.flash} picture={this.props.picture} swap={this.props.swap} />;
+      return <Photo home={this.props.home} flash={this.props.flash} picture={this.props.picture} swap={this.props.swap} check={this.props.check} retake={this.props.retake} />;
     }
   }
 
