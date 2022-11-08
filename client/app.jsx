@@ -2,6 +2,7 @@ import React from 'react';
 import Splash from './pages/splash';
 import parseRoute from './lib/parse-route';
 import Run from './pages/run';
+import Home from './pages/home';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -27,6 +28,9 @@ export default class App extends React.Component {
     }
     if (route.path === 'run') {
       return <Run home={this.props.home} />;
+    }
+    if (route.path === 'home') {
+      return <Home home={this.props.home} />;
     }
   }
 
