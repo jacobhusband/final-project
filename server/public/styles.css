@@ -66,3 +66,8 @@ textarea {
 .background-container .buttons {
   width: 7rem;
 }
+
+.camera-container button {
+  margin: 0.35rem;
+  margin-top: 0;
+}
