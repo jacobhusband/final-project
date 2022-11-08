@@ -2,12 +2,19 @@ import React from 'react';
 import Navbar from '../components/navbar';
 import Webcam from 'react-webcam';
 
+const videoConstraints = {
+  width: `${window.innerWidth}`,
+  height: `${window.innerHeight - 250}`,
+  facingMode: 'user'
+};
+
 export default class Photo extends React.Component {
 
   WebcamCapture() {
     return <Webcam
       audio={false}
       screenshotFormat="image/jpeg"
+      videoConstraints={videoConstraints}
     >
       {({ getScreenshot }) => (
         <button
