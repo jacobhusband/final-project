@@ -1,0 +1,34 @@
+h1,
+p,
+a,
+.btn {
+  font-family: "Josefin Sans", sans-serif;
+}
+
+.background-container {
+  background-image: url("images/splash.webp");
+  background-position: 85% 76%;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+}
+
+.background-container .radial-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(#0000, rgba(0, 0, 0, 0.5));
+  background-clip: content-box;
+}
+
+.background-container .buttons {
+  width: 7rem;
+}
+
+.navbar .nav-link,
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: white;
+}
