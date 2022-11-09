@@ -2,11 +2,18 @@ import React from 'react';
 import Navbar from '../components/navbar';
 import Webcam from 'react-webcam';
 import { set } from 'idb-keyval';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera, faRotate, faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import Button from 'react-bootstrap/Button';
 
 const videoConstraints = {
   width: `${window.innerWidth}`,
   height: `${window.innerHeight * 0.66}`
 };
+const camera = <FontAwesomeIcon icon={faCamera} />;
+const swap = <FontAwesomeIcon icon={faRotate} />;
+const check = <FontAwesomeIcon icon={faCheck} />;
+const retake = <FontAwesomeIcon icon={faRotateRight} />;
 
 export default class Photo extends React.Component {
   constructor(props) {
@@ -21,7 +28,8 @@ export default class Photo extends React.Component {
     this.indexImage = this.indexImage.bind(this);
   }
 
-  storeImage(image) {
+  storeImage(getScreenshot) {
+    const image = getScreenshot();
     this.setState({
       preRunImage: image
     });
@@ -32,21 +40,6 @@ export default class Photo extends React.Component {
       .then(() => {
       })
       .catch(err => console.error(`there is a ${err}`));
-  }
-
-  WebcamCapture() {
-    const { flash, picture, swap } = this.props;
-    const constraints = Object.assign({}, videoConstraints);
-    constraints.facingMode = this.state.facingMode;
-    return <Webcam
-      audio={false}
-      screenshotFormat="image/jpeg"
-      videoConstraints={constraints}
-    >
-      {({ getScreenshot }) => (
-        <CameraButtons flash={flash} picture={picture} swap={swap} getScreenshot={getScreenshot} storeImage={this.storeImage} swapCamera={this.swapCamera} />
-      )}
-    </Webcam>;
   }
 
   retakePhoto() {
@@ -66,13 +59,26 @@ export default class Photo extends React.Component {
   }
 
   PhotoTaken() {
-    const { check, retake } = this.props;
     return (
       <>
         <img src={this.state.preRunImage} alt="Pre Run Image" />
-        <PictureButtons check={check} retake={retake} retakePhoto={this.retakePhoto} indexImage={this.indexImage} />
+        <PictureButtons onRetakeClick={this.retakePhoto} onIndexClick={this.indexImage} />
       </>
     );
+  }
+
+  WebcamCapture() {
+    const constraints = Object.assign({}, videoConstraints);
+    constraints.facingMode = this.state.facingMode;
+    return <Webcam
+      audio={false}
+      screenshotFormat="image/jpeg"
+      videoConstraints={constraints}
+    >
+      {({ getScreenshot }) => (
+        <CameraButtons getScreenshot={getScreenshot} onStoreClick={this.storeImage} onSwapClick={this.swapCamera} />
+      )}
+    </Webcam>;
   }
 
   render() {
@@ -99,44 +105,36 @@ export default class Photo extends React.Component {
 }
 
 function CameraButtons(props) {
+  const { onStoreClick, onSwapClick } = props;
+
   return (
-    <div className='buttons' style={{ height: window.innerHeight * 0.08 }}>
-      <button
-        type="button"
-        className='btn btn-primary'
+    <div className='buttons align-middle' style={{ height: window.innerHeight * 0.08 }}>
+      <Button
+        className='m-2'
         onClick={() => {
-          props.storeImage(props.getScreenshot());
+          onStoreClick(props.getScreenshot);
         }}
-      >{props.picture}</button>
-      <button
-        type="button"
-        className='btn btn-primary'
-        onClick={() => {
-          props.swapCamera();
-        }}
-      >{props.swap}</button>
+      >{camera}</Button>
+      <Button
+        onClick={onSwapClick}
+      >{swap}</Button>
     </div>
   );
 }
 
 function PictureButtons(props) {
+  const { onIndexClick, onRetakeClick } = props;
+
   return (
-    <div className='buttons' style={{ height: window.innerHeight * 0.08 }}>
-      <a
+    <div className='buttons align-middle mt-2' style={{ height: window.innerHeight * 0.08 }}>
+      <Button
+        className="m-2"
         href="#"
-        type="button"
-        className='check btn btn-primary'
-        onClick={() => {
-          props.indexImage();
-        }}
-      >{props.check}</a>
-      <button
-        type="button"
-        className='retake btn btn-primary'
-        onClick={() => {
-          props.retakePhoto();
-        }}
-      >{props.retake}</button>
+        onClick={onIndexClick}
+      >{check}</Button>
+      <Button
+        onClick={onRetakeClick}
+      >{retake}</Button>
     </div>
   );
 }

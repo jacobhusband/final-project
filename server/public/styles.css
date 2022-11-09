@@ -13,14 +13,6 @@ a,
   height: 100vh;
 }
 
-.background-container h1 {
-  color: white;
-  font-size: 3rem;
-  font-weight: bold;
-  text-align: center;
-  padding-top: 5rem;
-}
-
 .background-container .radial-gradient-overlay {
   position: absolute;
   top: 0;
@@ -33,18 +25,6 @@ a,
 
 .background-container .buttons {
   width: 7rem;
-  vertical-align: middle;
-}
-
-.camera-container .buttons .check,
-.camera-container .buttons .retake {
-  margin-top: 0.5rem;
-}
-
-.camera-container button,
-.camera-container a {
-  margin: 0.35rem;
-  margin-top: 0;
 }
 
 .navbar .nav-link,

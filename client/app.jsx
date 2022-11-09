@@ -26,19 +26,19 @@ export default class App extends React.Component {
   renderPage() {
     const { route } = this.state;
     if (route.path === '') {
-      return <Splash home={this.props.home} run={this.props.run} />;
+      return <Splash />;
     }
     if (route.path === 'run') {
-      return <Run home={this.props.home} />;
+      return <Run />;
     }
     if (route.path === 'home') {
-      return <Home home={this.props.home} />;
+      return <Home />;
     }
     if (route.path === 'photo') {
-      return <Photo home={this.props.home} flash={this.props.flash} picture={this.props.picture} swap={this.props.swap} check={this.props.check} retake={this.props.retake} />;
+      return <Photo />;
     }
     if (route.path === 'warning') {
-      return <Warning home={this.props.home} />;
+      return <Warning />;
     }
   }
 
