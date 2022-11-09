@@ -18,14 +18,18 @@ export default class Photo extends React.Component {
     this.storeImage = this.storeImage.bind(this);
     this.retakePhoto = this.retakePhoto.bind(this);
     this.swapCamera = this.swapCamera.bind(this);
+    this.indexImage = this.indexImage.bind(this);
   }
 
   storeImage(image) {
-    set('preRunImage', image)
+    this.setState({
+      preRunImage: image
+    });
+  }
+
+  indexImage() {
+    set('preRunImage', this.state.preRunImage)
       .then(() => {
-        this.setState({
-          preRunImage: image
-        });
       })
       .catch(err => console.error(`there is a ${err}`));
   }
@@ -66,7 +70,7 @@ export default class Photo extends React.Component {
     return (
       <>
         <img src={this.state.preRunImage} alt="Pre Run Image" />
-        <PictureButtons check={check} retake={retake} retakePhoto={this.retakePhoto} />
+        <PictureButtons check={check} retake={retake} retakePhoto={this.retakePhoto} indexImage={this.indexImage} />
       </>
     );
   }
@@ -118,12 +122,14 @@ function CameraButtons(props) {
 function PictureButtons(props) {
   return (
     <div className='buttons' style={{ height: window.innerHeight * 0.08 }}>
-      <button
+      <a
+        href="#"
         type="button"
         className='check btn btn-primary'
         onClick={() => {
+          props.indexImage();
         }}
-      >{props.check}</button>
+      >{props.check}</a>
       <button
         type="button"
         className='retake btn btn-primary'
