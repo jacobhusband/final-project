@@ -5,18 +5,19 @@ import { set } from 'idb-keyval';
 
 const videoConstraints = {
   width: `${window.innerWidth}`,
-  height: `${window.innerHeight * 0.705}`,
-  facingMode: 'user'
+  height: `${window.innerHeight * 0.66}`
 };
 
 export default class Photo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      preRunImage: false
+      preRunImage: false,
+      facingMode: 'user'
     };
     this.storeImage = this.storeImage.bind(this);
     this.retakePhoto = this.retakePhoto.bind(this);
+    this.swapCamera = this.swapCamera.bind(this);
   }
 
   storeImage(image) {
@@ -31,13 +32,15 @@ export default class Photo extends React.Component {
 
   WebcamCapture() {
     const { flash, picture, swap } = this.props;
+    const constraints = Object.assign({}, videoConstraints);
+    constraints.facingMode = this.state.facingMode;
     return <Webcam
       audio={false}
       screenshotFormat="image/jpeg"
-      videoConstraints={videoConstraints}
+      videoConstraints={constraints}
     >
       {({ getScreenshot }) => (
-        <CameraButtons flash={flash} picture={picture} swap={swap} getScreenshot={getScreenshot} storeImage={this.storeImage} />
+        <CameraButtons flash={flash} picture={picture} swap={swap} getScreenshot={getScreenshot} storeImage={this.storeImage} swapCamera={this.swapCamera} />
       )}
     </Webcam>;
   }
@@ -46,6 +49,16 @@ export default class Photo extends React.Component {
     this.setState({
       preRunImage: null
     });
+  }
+
+  swapCamera() {
+    (this.state.facingMode === 'user')
+      ? this.setState({
+        facingMode: { exact: 'environment' }
+      })
+      : this.setState({
+        facingMode: 'user'
+      });
   }
 
   PhotoTaken() {
@@ -63,10 +76,10 @@ export default class Photo extends React.Component {
     let headerText;
     if (this.state.preRunImage) {
       image = this.PhotoTaken();
-      headerText = <p className='lh-lg h4 fw-bold mt-5 mb-5'>Look good?</p>;
+      headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold' style={{ height: window.innerHeight * 0.08 }}>Look good?</p>;
     } else {
       image = this.WebcamCapture();
-      headerText = <p className='lh-lg h4 fw-bold mt-5 mb-5'>Take a pre-exercise photo</p>;
+      headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold align-items-center' style={{ height: window.innerHeight * 0.08 }}>Take a pre-exercise photo</p>;
     }
 
     return (
@@ -83,13 +96,7 @@ export default class Photo extends React.Component {
 
 function CameraButtons(props) {
   return (
-    <div className='buttons'>
-      <button
-        type="button"
-        className='btn btn-primary'
-        onClick={() => {
-        }}
-      >{props.flash}</button>
+    <div className='buttons' style={{ height: window.innerHeight * 0.08 }}>
       <button
         type="button"
         className='btn btn-primary'
@@ -101,6 +108,7 @@ function CameraButtons(props) {
         type="button"
         className='btn btn-primary'
         onClick={() => {
+          props.swapCamera();
         }}
       >{props.swap}</button>
     </div>
@@ -109,7 +117,7 @@ function CameraButtons(props) {
 
 function PictureButtons(props) {
   return (
-    <div className='buttons'>
+    <div className='buttons' style={{ height: window.innerHeight * 0.08 }}>
       <button
         type="button"
         className='check btn btn-primary'
