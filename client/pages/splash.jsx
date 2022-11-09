@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from 'react-bootstrap/Button';
 
 export default class Splash extends React.Component {
 
@@ -8,8 +9,8 @@ export default class Splash extends React.Component {
         <div className='radial-gradient-overlay'>
           <h1>RunnerFuze</h1>
           <div className='buttons d-flex flex-column mx-auto mt-5'>
-            <a href='#home' type="button" className='btn btn-primary mb-3'>Home {this.props.home}</a>
-            <a href='#run' type="button" className='btn btn-primary'>Go Run {this.props.run}</a>
+            <Button href='#home' type="button" className='btn btn-primary mb-3'>Home {this.props.home}</Button>
+            <Button href='#run' type="button" className='btn btn-primary'>Go Run {this.props.run}</Button>
           </div>
         </div>
       </div>
