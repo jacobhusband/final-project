@@ -32,3 +32,8 @@ a,
 .navbar .nav-link:focus {
   color: white;
 }
+
+.stopwatch {
+  width: 300px;
+  height: 300px;
+}

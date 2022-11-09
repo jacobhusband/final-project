@@ -129,7 +129,7 @@ function PictureButtons(props) {
     <div className='buttons align-middle mt-2' style={{ height: window.innerHeight * 0.08 }}>
       <Button
         className="m-2"
-        href="#"
+        href="#timer"
         onClick={onIndexClick}
       >{check}</Button>
       <Button

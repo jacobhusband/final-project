@@ -5,6 +5,7 @@ import Run from './pages/run';
 import Home from './pages/home';
 import Photo from './pages/photo';
 import Warning from './pages/warning';
+import Timer from './pages/timer';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -27,18 +28,16 @@ export default class App extends React.Component {
     const { route } = this.state;
     if (route.path === '') {
       return <Splash />;
-    }
-    if (route.path === 'run') {
+    } else if (route.path === 'run') {
       return <Run />;
-    }
-    if (route.path === 'home') {
+    } else if (route.path === 'home') {
       return <Home />;
-    }
-    if (route.path === 'photo') {
+    } else if (route.path === 'photo') {
       return <Photo />;
-    }
-    if (route.path === 'warning') {
+    } else if (route.path === 'warning') {
       return <Warning />;
+    } else if (route.path === 'timer') {
+      return <Timer />;
     }
   }
 
