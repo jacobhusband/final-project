@@ -80,7 +80,7 @@ export default class Photo extends React.Component {
     let headerText;
     if (this.state.preRunImage) {
       image = this.PhotoTaken();
-      headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold' style={{ height: window.innerHeight * 0.08 }}>Look good?</p>;
+      headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold align-items-center' style={{ height: window.innerHeight * 0.08 }}>Look good?</p>;
     } else {
       image = this.WebcamCapture();
       headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold align-items-center' style={{ height: window.innerHeight * 0.08 }}>Take a pre-exercise photo</p>;

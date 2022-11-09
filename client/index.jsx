@@ -4,6 +4,7 @@ import App from './app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faPersonRunning, faBolt, faCamera, faRotate, faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'server/public/styles.css';
 
 const container = document.querySelector('#root');
 const root = ReactDOM.createRoot(container);
