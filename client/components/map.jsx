@@ -1,71 +1,41 @@
 import React from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
 import { get } from 'idb-keyval';
-
-const loader = new Loader({
-  apiKey: process.env.API,
-  version: 'weekly',
-  libraries: ['drawing', 'places']
-});
 
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mapCenter: { lat: 33.634929, lng: -117.7405074 }
+      url: null
     };
-    this.showMap();
-    this.mapDivRef = React.createRef();
   }
 
-  showMap(event) {
-    loader.load().then(() => {
-      this.map = new google.maps.Map(this.mapDivRef.current, {
-        center: this.state.mapCenter,
-        zoom: 18,
-        minZoom: 17,
-        maxZoom: 19
+  calculateCenter() {
+    return 0;
+  }
+
+  componentDidMount() {
+    this.calculateCenter();
+    get('latlng').then(arr => {
+      const mapCenter = { lat: 33.634929, lng: -117.7405074 };
+      const path = [];
+      arr.map(obj => {
+        const newStr = `|${obj.lat},${obj.lng}`;
+        path.push(newStr);
+        return obj;
       });
-      this.drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: google.maps.drawing.OverlayType.POLYLINE,
-        drawingControl: true,
-        drawingControlOptions: {
-          position: google.maps.ControlPosition.TOP_CENTER,
-          drawingModes: [google.maps.drawing.OverlayType.POLYLINE]
-        },
-        polylineOptions: {
-          editable: true,
-          clickable: true
-        },
-        circleOptions: {
-          fillColor: '#ffff00',
-          fillOpacity: 1,
-          strokeWeight: 5,
-          clickable: false,
-          editable: true,
-          zIndex: 1
-        }
+      const pathStyle = 'color:white|geodesic:true';
+      const strCoords = pathStyle + path.join('');
+      this.setState({
+        url: `https://maps.googleapis.com/maps/api/staticmap?center=${mapCenter.lat},${mapCenter.lng}&zoom=19&size=${window.innerWidth}x400&maptype=satellite&key=${process.env.API}&path=${strCoords}`
       });
-      this.drawingManager.setMap(this.map);
-      get("latlng").then(arr => {
-        const newCoords = arr.map(item => {
-          return { lat: item.lat, lng: item.lng }
-        })
-        const path = new google.maps.Polyline({
-          path: newCoords,
-          geodesic: true,
-          strokeColor: "#FF0000",
-          strokeOpacity: 1.0,
-          strokeWeight: 2,
-        });
-        path.setMap(this.map);
-      })
-    });
+    }).catch(err => console.error(err));
   }
 
   render() {
+    if (!this.state.url) return;
+
     return (
-      <div className='map' ref={this.mapDivRef} />
+      <img src={this.state.url} alt="" />
     );
   }
 }

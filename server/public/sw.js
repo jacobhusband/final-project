@@ -1,10 +1,23 @@
+const LATEST_CACHE_ID = 'v2';
+
 const addResourcesToCache = async resources => {
-  const cache = await caches.open('v1');
+  const cache = await caches.open(LATEST_CACHE_ID);
   await cache.addAll(resources);
 };
 
 self.addEventListener('install', event => {
   event.waitUntil(addResourcesToCache(['index.html', 'main.js', 'reset.css', 'layout.css']));
+});
+
+self.addEventListener('activate', activateEvent => {
+  activateEvent.waitUntil(
+    caches.keys().then(keyList => Promise.all(keyList.map(key => {
+      if (key !== LATEST_CACHE_ID) {
+        return caches.delete(key);
+      }
+      return 0;
+    })))
+  );
 });
 
 const putInCache = async (request, response) => {
