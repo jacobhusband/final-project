@@ -14,7 +14,20 @@ export default class App extends React.Component {
     };
   }
 
+  registerServiceWorker() {
+    if ('serviceWorker' in window.navigator) {
+      try {
+        window.navigator.serviceWorker.register('sw.js')
+          .then(registration => { })
+          .catch(err => console.error(err));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+
   componentDidMount() {
+    this.registerServiceWorker();
     window.addEventListener('hashchange', event => {
       const route = parseRoute(window.location.hash);
       this.setState({
