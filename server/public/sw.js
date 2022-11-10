@@ -34,7 +34,7 @@ const cacheFirst = async ({ request, fallbackUrl }) => {
 };
 
 self.addEventListener('fetch', event => {
-  if (!(event.request.url.indexOf('http') === 0)) return;
+  if (!(event.request.url.indexOf('http') === 0) || event.request.url.includes('fonts')) return;
   event.respondWith(
     cacheFirst({
       request: event.request,

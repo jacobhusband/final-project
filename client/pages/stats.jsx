@@ -7,7 +7,8 @@ export default class Stats extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      distance: 0
+      distance: 0,
+      time: 0
     };
     this.calculateDistance = this.calculateDistance.bind(this);
     this.calculateTime = this.calculateTime.bind(this);
@@ -29,9 +30,20 @@ export default class Stats extends React.Component {
 
   calculateTime() {
     get('latlng')
-      .then(res => {
+      .then(arr => {
+        const start = arr[0].time;
+        const end = arr[arr.length - 1].time;
+        this.setState({
+          time: end - start,
+        })
       })
       .catch(err => console.error(err));
+  }
+
+  calculatePace() {
+    if (!this.state.time) return;
+
+    return this.state.distance / (this.state.time / 3600)
   }
 
   findDistance(lat1, lat2, lng1, lng2) {

@@ -1,13 +1,12 @@
 import React from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
+import { get } from 'idb-keyval';
 
 const loader = new Loader({
   apiKey: process.env.API,
   version: 'weekly',
   libraries: ['drawing', 'places']
 });
-
-const google = window.google;
 
 export default class Map extends React.Component {
   constructor(props) {
@@ -48,6 +47,19 @@ export default class Map extends React.Component {
         }
       });
       this.drawingManager.setMap(this.map);
+      get("latlng").then(arr => {
+        const newCoords = arr.map(item => {
+          return { lat: item.lat, lng: item.lng }
+        })
+        const path = new google.maps.Polyline({
+          path: newCoords,
+          geodesic: true,
+          strokeColor: "#FF0000",
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
+        path.setMap(this.map);
+      })
     });
   }
 
