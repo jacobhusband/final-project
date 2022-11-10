@@ -7,7 +7,7 @@ export default class Message extends React.Component {
     if (this.props.message === 'warning') {
       text = 'We highly recommend that you track your runs on a mobile device. The device must be on you while running.';
     } else if (this.props.message === 'run') {
-      text = 'To track your run, don&apos;t turn off the screen. The screen should not go to sleep on its own.';
+      text = "To track your run, don't turn off the screen. The screen should not go to sleep on its own.";
     } else if (this.props.message === 'ready') {
       text = 'Ready to go?';
     } else if (this.props.message === 'time') {

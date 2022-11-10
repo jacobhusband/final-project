@@ -1,13 +1,18 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Message from '../components/message';
+import NoSleep from 'nosleep.js';
+import { set, update } from 'idb-keyval';
 
-export default class Stopwatch extends React.Component {
+const noSleep = new NoSleep();
+
+export default class Tracker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       time: 0,
-      id: null,
+      timerId: null,
+      coordId: null,
       phase: 'start'
     };
     this.setTimeInterval = this.setTimeInterval.bind(this);
@@ -15,11 +20,27 @@ export default class Stopwatch extends React.Component {
     this.pauseTime = this.pauseTime.bind(this);
     this.stopRun = this.stopRun.bind(this);
     this.endRun = this.endRun.bind(this);
+    this.restartIntervals = this.restartIntervals.bind(this);
   }
 
   setTimeInterval() {
+    this.triggerNoSleep();
+    const latlng = [];
+    set('latlng', latlng)
+      .then(() => {
+        this.setState({
+          coordId: setInterval(this.findPosition, 3000),
+          timerId: setInterval(this.increaseTime, 1000),
+          phase: 'during'
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  restartIntervals() {
     this.setState({
-      id: setInterval(this.increaseTime, 1000),
+      timerId: setInterval(this.increaseTime, 1000),
+      coordId: setInterval(this.findPosition, 3000),
       phase: 'during'
     });
   }
@@ -32,23 +53,50 @@ export default class Stopwatch extends React.Component {
   }
 
   pauseTime() {
-    clearInterval(this.state.id);
+    clearInterval(this.state.timerId);
+    clearInterval(this.state.coordId);
     this.setState({
-      id: null,
+      timerId: null,
+      coordId: null,
       phase: 'paused'
     });
   }
 
   stopRun() {
-    clearInterval(this.state.id);
+    clearInterval(this.state.timerId);
+    clearInterval(this.state.coordId);
     this.setState({
-      id: null,
+      timerId: null,
+      coordId: null,
       phase: 'finished'
     });
   }
 
   endRun() {
+    noSleep.disable();
+  }
 
+  findPosition() {
+    window.navigator.geolocation.getCurrentPosition(position => {
+      const time = new Date().getTime() / 1000;
+      const newPos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        time
+      };
+      update('latlng', arr => {
+        const newArr = [...arr];
+        newArr.push(newPos);
+        return newArr;
+      });
+    });
+  }
+
+  triggerNoSleep(event) {
+    document.addEventListener('click', function enableNoSleep() {
+      document.removeEventListener('click', enableNoSleep, false);
+      noSleep.enable();
+    }, false);
   }
 
   modifyTime(time) {
@@ -82,11 +130,11 @@ export default class Stopwatch extends React.Component {
       buttonRight = <Button onClick={this.stopRun}>Stop</Button>;
     } else if (this.state.phase === 'paused') {
       message = 'time';
-      buttonLeft = <Button onClick={this.setTimeInterval}>Resume</Button>;
+      buttonLeft = <Button onClick={this.restartIntervals}>Resume</Button>;
       buttonRight = <Button onClick={this.stopRun}>Stop</Button>;
     } else if (this.state.phase === 'finished') {
       message = 'final';
-      buttonLeft = <Button onClick={this.setTimeInterval}>Resume</Button>;
+      buttonLeft = <Button onClick={this.restartIntervals}>Resume</Button>;
       buttonRight = <Button onClick={this.endRun}>Finish</Button>;
     }
 
