@@ -28,9 +28,11 @@ export default class Map extends React.Component {
     const { minLat, minLng, maxLat, maxLng } = centerMinMaxObj;
     const miles = this.findDistance(minLat, maxLat, minLng, maxLng);
     const milesPerPx = miles / 400;
-    let zoom = (97.2713 * Math.cos(center.lat * Math.PI / 180) / milesPerPx) ** (1 / 2);
+    let zoom = (0.060470747293397 * Math.cos(center.lat * Math.PI / 180) / milesPerPx) ** (1 / 2);
     if (zoom > 22) {
       zoom = 22;
+    } else {
+      Math.trunc(zoom);
     }
     return zoom;
   }
