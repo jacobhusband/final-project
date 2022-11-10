@@ -7,6 +7,8 @@ const loader = new Loader({
   libraries: ['drawing', 'places']
 });
 
+const google = window.google;
+
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +20,6 @@ export default class Map extends React.Component {
   }
 
   showMap(event) {
-    const google = window.google;
     loader.load().then(() => {
       this.map = new google.maps.Map(this.mapDivRef.current, {
         center: this.state.mapCenter,
