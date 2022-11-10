@@ -2,6 +2,7 @@ require('dotenv/config');
 const path = require('path');
 const webpack = require('webpack');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const clientPath = path.join(__dirname, 'client');
 const serverPublicPath = path.join(__dirname, 'server', 'public');
@@ -53,6 +54,7 @@ module.exports = {
     new webpack.EnvironmentPlugin([]),
     isDevelopment && new ReactRefreshWebpackPlugin(),
     isDevelopment && new webpack.NoEmitOnErrorsPlugin(),
-    isDevelopment && new webpack.HotModuleReplacementPlugin()
+    isDevelopment && new webpack.HotModuleReplacementPlugin(),
+    new Dotenv()
   ].filter(Boolean)
 };

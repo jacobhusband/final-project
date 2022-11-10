@@ -10,7 +10,7 @@ export default class Warning extends React.Component {
       <div className='text-center'>
         <Navbar />
         <Message message="warning" />
-        <a href='#photo' type="button" className='btn btn-primary mt-3'>Continue</a>
+        <a href='#prePhoto' type="button" className='btn btn-primary mt-3'>Continue</a>
       </div>
     );
   }

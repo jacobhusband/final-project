@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Message from '../components/message';
 import NoSleep from 'nosleep.js';
 import { set, update } from 'idb-keyval';
+import Redirect from './redirect';
 
 const noSleep = new NoSleep();
 
@@ -25,6 +26,7 @@ export default class Tracker extends React.Component {
 
   setTimeInterval() {
     this.triggerNoSleep();
+    this.findPosition();
     const latlng = [];
     set('latlng', latlng)
       .then(() => {
@@ -74,6 +76,11 @@ export default class Tracker extends React.Component {
 
   endRun() {
     noSleep.disable();
+    this.stopRun();
+    this.findPosition();
+    this.setState({
+      phase: 'end'
+    });
   }
 
   findPosition() {
@@ -119,6 +126,8 @@ export default class Tracker extends React.Component {
   }
 
   render() {
+    if (this.state.phase === 'end') return <Redirect to="postPhoto" />;
+
     let buttonLeft, buttonRight, message;
     if (this.state.phase === 'start') {
       message = 'ready';

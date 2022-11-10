@@ -34,10 +34,11 @@ const cacheFirst = async ({ request, fallbackUrl }) => {
 };
 
 self.addEventListener('fetch', event => {
+  if (!(event.request.url.indexOf('http') === 0)) return;
   event.respondWith(
     cacheFirst({
       request: event.request,
-      fallbackUrl: './images/darth.jpeg'
+      fallbackUrl: './images/splash.webp'
     })
   );
 });

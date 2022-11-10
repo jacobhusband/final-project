@@ -5,6 +5,7 @@ import Run from './pages/run';
 import Home from './pages/home';
 import Photo from './pages/photo';
 import Warning from './pages/warning';
+import Stats from './pages/stats';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -44,12 +45,16 @@ export default class App extends React.Component {
       return <Run phase="preImage" />;
     } else if (route.path === 'home') {
       return <Home />;
-    } else if (route.path === 'photo') {
-      return <Photo />;
+    } else if (route.path === 'prePhoto') {
+      return <Photo to="pre" />;
     } else if (route.path === 'warning') {
       return <Warning />;
     } else if (route.path === 'timer') {
       return <Run phase="timer" />;
+    } else if (route.path === 'stats') {
+      return <Stats />;
+    } else if (route.path === 'postPhoto') {
+      return <Photo to="post" />;
     }
   }
 
