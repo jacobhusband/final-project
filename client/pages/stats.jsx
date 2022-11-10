@@ -34,8 +34,8 @@ export default class Stats extends React.Component {
         const start = arr[0].time;
         const end = arr[arr.length - 1].time;
         this.setState({
-          time: end - start,
-        })
+          time: end - start
+        });
       })
       .catch(err => console.error(err));
   }
@@ -43,7 +43,7 @@ export default class Stats extends React.Component {
   calculatePace() {
     if (!this.state.time) return;
 
-    return this.state.distance / (this.state.time / 3600)
+    return this.state.distance / (this.state.time / 3600);
   }
 
   findDistance(lat1, lat2, lng1, lng2) {
@@ -69,7 +69,7 @@ export default class Stats extends React.Component {
       <>
         <Navbar />
         <Map />
-        <button onClick={this.calculateDistance}>Calculate Distance</button>
+        {/* <button onClick={this.calculateDistance}>Calculate Distance</button> */}
       </>
     );
   }
