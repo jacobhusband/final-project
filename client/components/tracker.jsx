@@ -85,15 +85,23 @@ export default class Tracker extends React.Component {
 
   findPosition() {
     window.navigator.geolocation.getCurrentPosition(position => {
-      const time = new Date().getTime() / 1000;
-      const newPos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        time
-      };
+      // const time = new Date().getTime() / 1000;
+      // const newPos = {
+      //   lat: position.coords.latitude,
+      //   lng: position.coords.longitude,
+      //   time
+      // };
+      // update('latlng', arr => {
+      //   const newArr = [...arr];
+      //   newArr.push(newPos);
+      //   return newArr;
+      // });
+      // Use pretend coordinates for now
       update('latlng', arr => {
-        const newArr = [...arr];
-        newArr.push(newPos);
+        const newArr = [
+          { lat: 34.052235, lng: -118.243683, time: 0 },
+          { lat: 37.774929, lng: -122.419418, time: 100000 }
+        ];
         return newArr;
       });
     });

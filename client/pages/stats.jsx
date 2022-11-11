@@ -8,42 +8,45 @@ export default class Stats extends React.Component {
     super(props);
     this.state = {
       distance: 0,
-      time: 0
+      time: 0,
+      pace: null
     };
-    this.calculateDistance = this.calculateDistance.bind(this);
-    this.calculateTime = this.calculateTime.bind(this);
+    this.doCalculations();
   }
 
-  calculateDistance() {
+  doCalculations() {
     get('latlng')
       .then(arr => {
         const newDistances = [];
         for (let i = 1; i < arr.length; i++) {
           newDistances.push(this.findDistance(arr[i - 1].lat, arr[i].lat, arr[i - 1].lng, arr[i].lng));
         }
-        this.setState({
-          distance: newDistances.reduce((x, y) => x + y)
-        });
-      })
-      .catch(err => console.error(err));
-  }
-
-  calculateTime() {
-    get('latlng')
-      .then(arr => {
         const start = arr[0].time;
         const end = arr[arr.length - 1].time;
+        const distance = newDistances.reduce((x, y) => x + y).toFixed(2);
+        const time = this.modifyTime(Math.trunc(end - start));
+        const pace = this.modifyTime(Math.trunc((end - start) / distance));
+
         this.setState({
-          time: end - start
+          time,
+          distance,
+          pace
         });
       })
       .catch(err => console.error(err));
   }
 
-  calculatePace() {
-    if (!this.state.time) return;
-
-    return this.state.distance / (this.state.time / 3600);
+  modifyTime(seconds) {
+    const clockSeconds = seconds % 60;
+    const minutes = Math.trunc(seconds / 60);
+    const clockMinutes = minutes % 60;
+    const hours = Math.trunc(minutes / 60);
+    if (!hours && !minutes) {
+      return `${clockSeconds} seconds`;
+    } else if (!hours) {
+      return `${clockMinutes} minutes, ${clockSeconds} seconds`;
+    }
+    return `${hours} hours, ${clockMinutes} minutes, ${clockSeconds} seconds`;
   }
 
   findDistance(lat1, lat2, lng1, lng2) {
@@ -65,12 +68,20 @@ export default class Stats extends React.Component {
   }
 
   render() {
+    if (!this.state.pace === null) return;
+
     return (
-      <>
+      <div className="stats">
         <Navbar />
         <Map />
-        {/* <button onClick={this.calculateDistance}>Calculate Distance</button> */}
-      </>
+        <h1 className='fw-bold m-3'>Statistics</h1>
+        <h4 className='fw-bold m-2 mb-1'>DISTANCE</h4>
+        <p className='h4 m-2 mt-1 mb-4'>{this.state.distance + ' miles'}</p>
+        <h4 className='fw-bold m-2 mb-1'>TIME</h4>
+        <p className='h4 m-2 mt-1 mb-4'>{this.state.time}</p>
+        <h4 className='fw-bold m-2 mb-1'>PACE</h4>
+        <p className='h4 m-2 mt-1 mb-4'>{this.state.pace + ' per mile'}</p>
+      </div>
     );
   }
 }

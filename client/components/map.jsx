@@ -51,7 +51,7 @@ export default class Map extends React.Component {
       const pathStyle = 'color:black';
       const strCoords = pathStyle + path.join('');
       this.setState({
-        url: `https://maps.googleapis.com/maps/api/staticmap?center=${mapCenter.lat},${mapCenter.lng}&zoom=${zoom}&size=${window.innerWidth}x400&key=${process.env.API}&path=${strCoords}`
+        url: `https://maps.googleapis.com/maps/api/staticmap?center=${mapCenter.lat},${mapCenter.lng}&zoom=${zoom}&size=${window.innerWidth}x${Math.trunc(window.innerHeight * 0.3)}&key=${process.env.API}&path=${strCoords}`
       });
     }).catch(err => console.error(err));
   }
