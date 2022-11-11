@@ -9,7 +9,9 @@ export default class Stats extends React.Component {
     this.state = {
       distance: 0,
       time: 0,
-      pace: null
+      pace: null,
+      preImage: null,
+      postImage: null
     };
     this.doCalculations();
   }
@@ -67,8 +69,21 @@ export default class Stats extends React.Component {
     return (c * r);
   }
 
+  componentDidMount() {
+    get('preImage').then(image => {
+      this.setState({
+        preImage: image
+      });
+    });
+    get('postImage').then(image => {
+      this.setState({
+        postImage: image
+      });
+    });
+  }
+
   render() {
-    if (!this.state.pace === null) return;
+    if (!this.state.pace === null || !this.state.preImage || !this.state.postImage) return;
 
     return (
       <div className="stats">
@@ -81,6 +96,14 @@ export default class Stats extends React.Component {
         <p className='h4 m-2 mt-1 mb-4'>{this.state.time}</p>
         <h4 className='fw-bold m-2 mb-1'>PACE</h4>
         <p className='h4 m-2 mt-1 mb-4'>{this.state.pace + ' per mile'}</p>
+        <div className='images'>
+          <div className='image'>
+            <img src={this.state.preImage} alt="" />
+          </div>
+          <div className='image'>
+            <img src={this.state.postImage} alt="" />
+          </div>
+        </div>
       </div>
     );
   }
