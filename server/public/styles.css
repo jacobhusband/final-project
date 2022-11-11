@@ -78,6 +78,11 @@ img {
     margin-top: -1rem !important;
   }
 
+  .desktop-images {
+    margin-top: 0.5rem !important;
+    padding: 1rem !important;
+  }
+
   .stats .desktop-image,
   .stats .map-image {
     width: 30% !important;
