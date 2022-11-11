@@ -60,3 +60,32 @@ img {
 .stats .image {
   width: 45%;
 }
+
+.desktop-image {
+  display: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .stats .images {
+    display: none !important;
+  }
+
+  .desktop-image {
+    display: block;
+  }
+
+  .stats .buttons {
+    margin-top: -1rem !important;
+  }
+
+  .stats .desktop-image,
+  .stats .map-image {
+    width: 30% !important;
+  }
+
+  .stats .desktop-image img,
+  .stats .map-image img {
+    height: 200px;
+    object-fit: cover;
+  }
+}

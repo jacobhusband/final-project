@@ -92,10 +92,20 @@ export default class Stats extends React.Component {
     if (!this.state.pace === null || !this.state.preImage || !this.state.postImage) return;
 
     return (
-      <div className="stats ">
+      <div className="stats">
         <Navbar />
-        <div className='content mx-auto'>
-          <Map />
+        <div className='container mx-auto'>
+          <div className="container d-flex justify-content-between mt-4 p-0">
+            <div className='map-image w-100'>
+              <Map />
+            </div>
+            <div className='desktop-image'>
+              <img className='rounded' src={this.state.preImage} alt="" />
+            </div>
+            <div className='desktop-image'>
+              <img className='rounded' src={this.state.postImage} alt="" />
+            </div>
+          </div>
           <h1 className='fw-bold m-3'>Statistics</h1>
           <h4 className='fw-bold m-2 mb-1'>DISTANCE</h4>
           <p className='h4 m-2 mt-1 mb-4'>{this.state.distance + ' miles'}</p>
