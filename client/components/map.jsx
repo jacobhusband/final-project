@@ -1,6 +1,8 @@
 import React from 'react';
 import { get } from 'idb-keyval';
 
+const MILES_PER_PX_TO_ZOOM_RATIO = 0.060470747293397;
+
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -27,8 +29,8 @@ export default class Map extends React.Component {
   calculateZoom(center, centerMinMaxObj) {
     const { minLat, minLng, maxLat, maxLng } = centerMinMaxObj;
     const miles = this.findDistance(minLat, maxLat, minLng, maxLng);
-    const milesPerPx = miles / 400;
-    let zoom = (0.060470747293397 * Math.cos(center.lat * Math.PI / 180) / milesPerPx) ** (1 / 2);
+    const milesPerPx = miles / window.innerWidth;
+    let zoom = (MILES_PER_PX_TO_ZOOM_RATIO * Math.cos(center.lat * Math.PI / 180) / milesPerPx) ** (1 / 2);
     if (zoom > 22) {
       zoom = 22;
     } else {
@@ -43,10 +45,9 @@ export default class Map extends React.Component {
       const mapCenter = centerMinMaxObj.center;
       const zoom = this.calculateZoom(mapCenter, centerMinMaxObj);
       const path = [];
-      arr.map(obj => {
+      arr.forEach(obj => {
         const newStr = `|${obj.lat},${obj.lng}`;
         path.push(newStr);
-        return obj;
       });
       const pathStyle = 'color:black';
       const strCoords = pathStyle + path.join('');

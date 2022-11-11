@@ -8,6 +8,8 @@ export default class Run extends React.Component {
   render() {
     let content;
 
+    const message = "To track your run, don't turn off the screen. The screen should not go to sleep on its own.";
+
     if (this.props.phase === 'preImage') {
       let ref;
       if (window.innerWidth > 600) {
@@ -16,7 +18,9 @@ export default class Run extends React.Component {
         ref = '#prePhoto';
       }
       content = <>
-        <Message message="run" />
+        <Message>
+          {message}
+        </Message>
         <a href={ref} type="button" className='btn btn-primary mt-3'>Continue</a>
       </>;
     } else if (this.props.phase === 'timer') {

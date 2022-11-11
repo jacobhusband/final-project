@@ -138,19 +138,19 @@ export default class Tracker extends React.Component {
 
     let buttonLeft, buttonRight, message;
     if (this.state.phase === 'start') {
-      message = 'ready';
+      message = 'Ready to go?';
       buttonLeft = <Button onClick={this.setTimeInterval}>Start</Button>;
       buttonRight = <Button onClick={this.stopRun}>Stop</Button>;
     } else if (this.state.phase === 'during') {
-      message = 'time';
+      message = 'Time';
       buttonLeft = <Button onClick={this.pauseTime}>Pause</Button>;
       buttonRight = <Button onClick={this.stopRun}>Stop</Button>;
     } else if (this.state.phase === 'paused') {
-      message = 'time';
+      message = 'Time';
       buttonLeft = <Button onClick={this.restartIntervals}>Resume</Button>;
       buttonRight = <Button onClick={this.stopRun}>Stop</Button>;
     } else if (this.state.phase === 'finished') {
-      message = 'final';
+      message = 'Final Time';
       buttonLeft = <Button onClick={this.restartIntervals}>Resume</Button>;
       buttonRight = <Button onClick={this.endRun}>Finish</Button>;
     }
@@ -159,7 +159,9 @@ export default class Tracker extends React.Component {
 
     return (
       <>
-        <Message message={message} />
+        <Message>
+          {message}
+        </Message>
         <div className='stopwatch d-flex justify-content-center align-items-center mx-auto border border-3 border-primary rounded-circle'>
           <p className='h1 text-primary'>{time}</p>
         </div>

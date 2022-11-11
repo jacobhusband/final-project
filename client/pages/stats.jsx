@@ -14,7 +14,6 @@ export default class Stats extends React.Component {
       preImage: null,
       postImage: null
     };
-    this.doCalculations();
     this.saveRun = this.saveRun.bind(this);
   }
 
@@ -86,6 +85,7 @@ export default class Stats extends React.Component {
         postImage: image
       });
     });
+    this.doCalculations();
   }
 
   render() {

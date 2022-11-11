@@ -37,7 +37,6 @@
     "babel-loader": "^8.2.5",
     "connect-livereload": "^0.6.1",
     "css-loader": "^6.7.1",
-    "dotenv-webpack": "^8.0.1",
     "error-overlay-webpack-plugin": "^1.1.0",
     "eslint": "^8.26.0",
     "eslint-config-standard": "^17.0.0",
