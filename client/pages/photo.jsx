@@ -19,7 +19,7 @@ export default class Photo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      preRunImage: false,
+      image: false,
       facingMode: 'user'
     };
     this.storeImage = this.storeImage.bind(this);
@@ -31,20 +31,27 @@ export default class Photo extends React.Component {
   storeImage(getScreenshot) {
     const image = getScreenshot();
     this.setState({
-      preRunImage: image
+      image
     });
   }
 
   indexImage() {
-    set('preRunImage', this.state.preRunImage)
-      .then(() => {
-      })
-      .catch(err => console.error(`there is a ${err}`));
+    if (this.props.to === 'pre') {
+      set('preImage', this.state.image)
+        .then(() => {
+        })
+        .catch(err => console.error(`there is a ${err}`));
+    } else if (this.props.to === 'post') {
+      set('postImage', this.state.image)
+        .then(() => {
+        })
+        .catch(err => console.error(`there is a ${err}`));
+    }
   }
 
   retakePhoto() {
     this.setState({
-      preRunImage: null
+      image: null
     });
   }
 
@@ -59,10 +66,18 @@ export default class Photo extends React.Component {
   }
 
   PhotoTaken() {
+    let checkRef;
+
+    if (this.props.to === 'pre') {
+      checkRef = '#timer';
+    } else {
+      checkRef = '#stats';
+    }
+
     return (
       <>
-        <img src={this.state.preRunImage} alt="Pre Run Image" />
-        <PictureButtons onRetakeClick={this.retakePhoto} onIndexClick={this.indexImage} />
+        <img src={this.state.image} alt="Pre Run Image" />
+        <PictureButtons onRetakeClick={this.retakePhoto} onIndexClick={this.indexImage} checkRef={checkRef} />
       </>
     );
   }
@@ -84,12 +99,18 @@ export default class Photo extends React.Component {
   render() {
     let image;
     let headerText;
-    if (this.state.preRunImage) {
+    if (this.state.image && this.props.to === 'pre') {
       image = this.PhotoTaken();
       headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold align-items-center' style={{ height: window.innerHeight * 0.08 }}>Look good?</p>;
-    } else {
+    } else if (!this.state.image && this.props.to === 'pre') {
       image = this.WebcamCapture();
       headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold align-items-center' style={{ height: window.innerHeight * 0.08 }}>Take a pre-exercise photo</p>;
+    } else if (this.state.image && this.props.to === 'post') {
+      image = this.PhotoTaken();
+      headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold align-items-center' style={{ height: window.innerHeight * 0.08 }}>Look good?</p>;
+    } else if (!this.state.image && this.props.to === 'post') {
+      image = this.WebcamCapture();
+      headerText = <p className='mb-0 d-flex row justify-content-center lh-lg h4 fw-bold align-items-center' style={{ height: window.innerHeight * 0.08 }}>Take a post-exercise photo</p>;
     }
 
     return (
@@ -123,13 +144,13 @@ function CameraButtons(props) {
 }
 
 function PictureButtons(props) {
-  const { onIndexClick, onRetakeClick } = props;
+  const { onIndexClick, onRetakeClick, checkRef } = props;
 
   return (
     <div className='buttons align-middle mt-2' style={{ height: window.innerHeight * 0.08 }}>
       <Button
         className="m-2"
-        href="#"
+        href={checkRef}
         onClick={onIndexClick}
       >{check}</Button>
       <Button
