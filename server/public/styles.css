@@ -57,15 +57,6 @@ img {
   font-size: 0.75rem;
 }
 
-.stats .images {
-  display: flex;
-  justify-content: space-around;
-}
-
 .stats .image {
   width: 45%;
-}
-
-.stats .image img {
-  border-radius: 1rem;
 }
