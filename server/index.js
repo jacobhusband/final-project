@@ -19,6 +19,17 @@ app.use(express.json());
 app.use(staticMiddleware);
 
 app.get('/api/runs', (req, res, next) => {
+  const sql = `
+  select "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords"
+  from "runs"
+  where "accountId" = $1;
+  `;
+  const params = ['1'];
+  db.query(sql, params)
+    .then(result => {
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
 });
 
 app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
