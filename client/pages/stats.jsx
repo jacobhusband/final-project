@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../components/navbar';
 import Map from '../components/map';
 import Button from 'react-bootstrap/Button';
-import { get } from 'idb-keyval';
+import { get, getMany } from 'idb-keyval';
 
 export default class Stats extends React.Component {
   constructor(props) {
@@ -18,7 +18,19 @@ export default class Stats extends React.Component {
   }
 
   saveRun() {
-    return 0;
+    const { distance, time, preImage, postImage } = this.state;
+    getMany(['mapImg', 'latlng']).then(([mapImg, latlng]) => {
+      const details = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ preImage, postImage, mapImg, distance, time, latlng })
+      };
+      fetch('/api/runs', details).then(result => result.json()).then(data => {
+      }).catch(err => console.error(err));
+    }).catch(err => console.error(err));
   }
 
   doCalculations() {
@@ -75,14 +87,10 @@ export default class Stats extends React.Component {
   }
 
   componentDidMount() {
-    get('preImage').then(image => {
+    getMany(['preImage', 'postImage']).then(([preImage, postImage]) => {
       this.setState({
-        preImage: image
-      });
-    });
-    get('postImage').then(image => {
-      this.setState({
-        postImage: image
+        preImage,
+        postImage
       });
     });
     this.doCalculations();

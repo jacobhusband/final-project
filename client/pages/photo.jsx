@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from '../components/navbar';
 import Webcam from 'react-webcam';
+import { b64toFile } from 'b64-to-file';
 import { set } from 'idb-keyval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera, faRotate, faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
@@ -36,17 +37,29 @@ export default class Photo extends React.Component {
   }
 
   indexImage() {
-    if (this.props.to === 'pre') {
-      set('preImage', this.state.image)
-        .then(() => {
-        })
-        .catch(err => console.error(`there is a ${err}`));
-    } else if (this.props.to === 'post') {
-      set('postImage', this.state.image)
-        .then(() => {
-        })
-        .catch(err => console.error(`there is a ${err}`));
-    }
+    const form = new FormData();
+    const image = b64toFile(this.state.image, 'runImage');
+    form.append('image', image);
+    const details = {
+      method: 'POST',
+      body: form
+    };
+    fetch('/api/uploads', details)
+      .then(res => res.json())
+      .then(obj => {
+        if (this.props.to === 'pre') {
+          set('preImage', obj.url)
+            .then(() => {
+            })
+            .catch(err => console.error(`there is a ${err}`));
+        } else if (this.props.to === 'post') {
+          set('postImage', obj.url)
+            .then(() => {
+            })
+            .catch(err => console.error(`there is a ${err}`));
+        }
+      })
+      .catch(err => console.error(err));
   }
 
   retakePhoto() {
