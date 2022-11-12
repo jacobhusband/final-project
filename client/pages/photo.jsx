@@ -50,11 +50,13 @@ export default class Photo extends React.Component {
         if (this.props.to === 'pre') {
           set('preImage', obj.url)
             .then(() => {
+              this.props.savePreImage(obj.url);
             })
             .catch(err => console.error(`there is a ${err}`));
         } else if (this.props.to === 'post') {
           set('postImage', obj.url)
             .then(() => {
+              this.props.savePostImage(obj.url);
             })
             .catch(err => console.error(`there is a ${err}`));
         }

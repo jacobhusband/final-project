@@ -12,8 +12,24 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      route: parseRoute(window.location.hash)
+      route: parseRoute(window.location.hash),
+      preImageUrl: null,
+      postImageUrl: null
     };
+    this.savePreImage = this.savePreImage.bind(this);
+    this.savePostImage = this.savePostImage.bind(this);
+  }
+
+  savePreImage(preImageUrl) {
+    this.setState({
+      preImageUrl
+    });
+  }
+
+  savePostImage(postImageUrl) {
+    this.setState({
+      postImageUrl
+    });
   }
 
   registerServiceWorker() {
@@ -47,15 +63,15 @@ export default class App extends React.Component {
     } else if (route.path === 'home') {
       return <Home />;
     } else if (route.path === 'prePhoto') {
-      return <Photo to="pre" />;
+      return <Photo to="pre" savePreImage={this.savePreImage} />;
     } else if (route.path === 'warning') {
       return <Warning />;
     } else if (route.path === 'timer') {
       return <Run phase="timer" />;
     } else if (route.path === 'stats') {
-      return <Stats />;
+      return <Stats preImageUrl={this.state.preImageUrl} postImageUrl={this.state.postImageUrl} />;
     } else if (route.path === 'postPhoto') {
-      return <Photo to="post" />;
+      return <Photo to="post" savePostImage={this.savePostImage} />;
     } else if (route.path === 'saved') {
       return <Saved />;
     }

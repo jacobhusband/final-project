@@ -8,17 +8,24 @@ export default class Stats extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      distance: 0,
-      time: 0,
+      distance: null,
+      time: null,
       pace: null,
-      preImage: null,
-      postImage: null
+      mapImage: null
     };
     this.saveRun = this.saveRun.bind(this);
+    this.saveMapImage = this.saveMapImage.bind(this);
+  }
+
+  saveMapImage(mapImage) {
+    this.setState({
+      mapImage
+    });
   }
 
   saveRun() {
-    const { distance, time, preImage, postImage } = this.state;
+    const { distance, time } = this.state;
+    const { preImageUrl, postImageUrl } = this.props;
     getMany(['mapImg', 'latlng']).then(([mapImg, latlng]) => {
       const details = {
         method: 'POST',
@@ -26,37 +33,11 @@ export default class Stats extends React.Component {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ preImage, postImage, mapImg, distance, time, latlng })
+        body: JSON.stringify({ preImageUrl, postImageUrl, mapImg, distance, time, latlng })
       };
       fetch('/api/runs', details).then(result => result.json()).then(data => {
       }).catch(err => console.error(err));
     }).catch(err => console.error(err));
-  }
-
-  doCalculations() {
-    get('latlng')
-      .then(arr => {
-        const newDistances = [];
-        for (let i = 1; i < arr.length; i++) {
-          newDistances.push(this.findDistance(arr[i - 1].lat, arr[i].lat, arr[i - 1].lng, arr[i].lng));
-        }
-        const start = arr[0].time;
-        const end = arr[arr.length - 1].time;
-        const distance = newDistances.reduce((x, y) => x + y).toFixed(2);
-        const time = this.modifyTime(Math.trunc(end - start));
-        let pace;
-        if (parseInt(distance)) {
-          pace = this.modifyTime(Math.trunc((end - start) / distance));
-        } else {
-          pace = 'Not available';
-        }
-        this.setState({
-          time,
-          distance,
-          pace
-        });
-      })
-      .catch(err => console.error(err));
   }
 
   modifyTime(seconds) {
@@ -91,17 +72,33 @@ export default class Stats extends React.Component {
   }
 
   componentDidMount() {
-    getMany(['preImage', 'postImage']).then(([preImage, postImage]) => {
-      this.setState({
-        preImage,
-        postImage
-      });
-    });
-    this.doCalculations();
+    get('latlng')
+      .then(arr => {
+        const newDistances = [];
+        for (let i = 1; i < arr.length; i++) {
+          newDistances.push(this.findDistance(arr[i - 1].lat, arr[i].lat, arr[i - 1].lng, arr[i].lng));
+        }
+        const start = arr[0].time;
+        const end = arr[arr.length - 1].time;
+        const distance = newDistances.reduce((x, y) => x + y).toFixed(2);
+        const time = this.modifyTime(Math.trunc(end - start));
+        let pace;
+        if (parseInt(distance)) {
+          pace = this.modifyTime(Math.trunc((end - start) / distance));
+        } else {
+          pace = 'Not available';
+        }
+        this.setState({
+          time,
+          distance,
+          pace
+        });
+      })
+      .catch(err => console.error(err));
   }
 
   render() {
-    if (this.state.pace === null || this.state.preImage === null || this.state.postImage === null) return;
+    if (this.state.pace === null || this.props.postImageUrl === null || this.props.preImageUrl === null) return;
 
     const pace = (this.state.pace === 'Not available') ? this.state.pace : this.state.pace + ' per mile';
 
@@ -111,13 +108,13 @@ export default class Stats extends React.Component {
         <div className='mx-auto'>
           <div className="desktop-images container d-flex justify-content-between p-0">
             <div className='map-image w-100'>
-              <Map />
+              <Map saveMapImage={this.saveMapImage} />
             </div>
             <div className='desktop-image'>
-              <img className='rounded' src={this.state.preImage} alt="" />
+              <img className='rounded' src={this.props.preImageUrl} alt="" />
             </div>
             <div className='desktop-image'>
-              <img className='rounded' src={this.state.postImage} alt="" />
+              <img className='rounded' src={this.props.postImageUrl} alt="" />
             </div>
           </div>
           <div className="container">
@@ -130,10 +127,10 @@ export default class Stats extends React.Component {
             <p className='h4 m-2 mt-1 mb-4'>{pace}</p>
             <div className='images d-flex justify-content-around'>
               <div className='image'>
-                <img className='rounded' src={this.state.preImage} alt="" />
+                <img className='rounded' src={this.props.preImageUrl} alt="" />
               </div>
               <div className='image'>
-                <img className='rounded' src={this.state.postImage} alt="" />
+                <img className='rounded' src={this.props.postImageUrl} alt="" />
               </div>
             </div>
             <div className="buttons mt-1">
