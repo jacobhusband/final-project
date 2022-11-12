@@ -68,7 +68,7 @@ CREATE TABLE "public"."runs" (
 	"afterImageUrl" TEXT NOT NULL,
 	"routeImageUrl" TEXT NOT NULL,
 	"distance" DECIMAL NOT NULL,
-	"time" TIME NOT NULL,
+	"time" TEXT NOT NULL,
 	"arrayOfCoords" json NOT NULL,
 	CONSTRAINT "runs_pk" PRIMARY KEY ("runId")
 ) WITH (

@@ -22,25 +22,29 @@ app.get('/api/runs', (req, res, next) => {
 });
 
 app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
-  res.status(201).json({ url: '/images/' + req.file.filename });
+  if (req.file.filename) {
+    res.status(201).json({ url: '/images/' + req.file.filename });
+  } else {
+    throw new ClientError(500, 'Unexpected error occurred');
+  }
 });
 
 app.post('/api/runs', (req, res, next) => {
-  const { beforeImageUrl, afterImageUrl, routeImageUrl, distance, time, arrayOfCoords } = req.body;
+  const { preImage, postImage, mapImg, distance, time, latlng } = req.body;
 
-  if (!beforeImageUrl || !afterImageUrl || !routeImageUrl || !distance || !time || !arrayOfCoords) {
+  if (preImage === undefined || postImage === undefined || mapImg === undefined || distance === undefined || time === undefined || latlng === undefined) {
     throw new ClientError(400, 'Missing one of the images, distance, time, or coordinates');
   }
 
   const sql = `
   insert into "public"."runs" ("accountId", "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords")
-  values (1, $1, $2, $3, $4, $5, $6)
+  values (1, $1, $2, $3, $4, $5, $6);
   `;
-  const params = [beforeImageUrl, afterImageUrl, routeImageUrl, distance, time, arrayOfCoords];
+  const params = [preImage, postImage, mapImg, distance, time, JSON.stringify(latlng)];
 
   db.query(sql, params)
     .then(result => {
-      res.statusCode(201);
+      res.status(201).json({ message: 'Success' });
     })
     .catch(err => next(err));
 });
