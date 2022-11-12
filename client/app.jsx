@@ -6,6 +6,7 @@ import Home from './pages/home';
 import Photo from './pages/photo';
 import Warning from './pages/warning';
 import Stats from './pages/stats';
+import Saved from './pages/saved';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -55,6 +56,8 @@ export default class App extends React.Component {
       return <Stats />;
     } else if (route.path === 'postPhoto') {
       return <Photo to="post" />;
+    } else if (route.path === 'saved') {
+      return <Saved />;
     }
   }
 
