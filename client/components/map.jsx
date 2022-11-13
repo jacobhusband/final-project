@@ -50,7 +50,7 @@ export default class Map extends React.Component {
       });
       const pathStyle = 'color:black';
       const strCoords = pathStyle + path.join('');
-      const url = `https://maps.googleapis.com/maps/api/staticmap?center=${mapCenter.lat},${mapCenter.lng}&zoom=${zoom}&size=${window.innerWidth}x${Math.trunc(window.innerHeight * 0.3)}&key=${process.env.API}&path=${strCoords}`;
+      const url = `https://maps.googleapis.com/maps/api/staticmap?center=${mapCenter.lat},${mapCenter.lng}&zoom=${zoom}&size=${window.innerWidth}x${window.innerWidth}&key=${process.env.API}&path=${strCoords}`;
       set('mapImg', url).then(res => {
         this.props.saveMapImage(url);
         this.setState({

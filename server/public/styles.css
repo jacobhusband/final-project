@@ -32,6 +32,11 @@ img {
   width: 7rem;
 }
 
+.saved-runs img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
 .navbar .nav-link,
 .navbar .nav-link:hover,
 .navbar .nav-link:focus {

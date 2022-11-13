@@ -104,6 +104,11 @@ export default class Tracker extends React.Component {
       //   ];
       //   return newArr;
       // });
+    }, err => console.error(err),
+    {
+      enableHighAccuracy: true,
+      timeout: 2500,
+      maximumAge: 0
     });
   }
 
