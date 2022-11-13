@@ -63,7 +63,7 @@ export default class App extends React.Component {
     } else if (route.path === 'home') {
       return <Home />;
     } else if (route.path === 'prePhoto') {
-      return <Photo to="pre" savePreImage={this.savePreImage} />;
+      return <Photo to="pre" savePreImage={this.savePreImage} preImageUrl={this.state.preImageUrl} />;
     } else if (route.path === 'warning') {
       return <Warning />;
     } else if (route.path === 'timer') {
@@ -71,7 +71,7 @@ export default class App extends React.Component {
     } else if (route.path === 'stats') {
       return <Stats preImageUrl={this.state.preImageUrl} postImageUrl={this.state.postImageUrl} />;
     } else if (route.path === 'postPhoto') {
-      return <Photo to="post" savePostImage={this.savePostImage} />;
+      return <Photo to="post" savePostImage={this.savePostImage} postImageUrl={this.state.postImageUrl} />;
     } else if (route.path === 'saved') {
       return <Saved />;
     }

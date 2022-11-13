@@ -6,6 +6,7 @@ import { set } from 'idb-keyval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera, faRotate, faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
+import Redirect from '../components/redirect';
 
 const videoConstraints = {
   width: `${window.innerWidth}`,
@@ -81,18 +82,11 @@ export default class Photo extends React.Component {
   }
 
   PhotoTaken() {
-    let checkRef;
-
-    if (this.props.to === 'pre') {
-      checkRef = '#timer';
-    } else {
-      checkRef = '#stats';
-    }
 
     return (
       <>
         <img src={this.state.image} alt="Pre Run Image" />
-        <PictureButtons onRetakeClick={this.retakePhoto} onIndexClick={this.indexImage} checkRef={checkRef} />
+        <PictureButtons onRetakeClick={this.retakePhoto} onIndexClick={this.indexImage} />
       </>
     );
   }
@@ -112,6 +106,9 @@ export default class Photo extends React.Component {
   }
 
   render() {
+    if (this.props.preImageUrl) return <Redirect to="timer" />;
+    if (this.props.postImageUrl) return <Redirect to="stats" />;
+
     let image;
     let headerText;
     if (this.state.image && this.props.to === 'pre') {
@@ -159,13 +156,12 @@ function CameraButtons(props) {
 }
 
 function PictureButtons(props) {
-  const { onIndexClick, onRetakeClick, checkRef } = props;
+  const { onIndexClick, onRetakeClick } = props;
 
   return (
     <div className='buttons align-middle mt-2' style={{ height: window.innerHeight * 0.08 }}>
       <Button
         className="m-2"
-        href={checkRef}
         onClick={onIndexClick}
       >{check}</Button>
       <Button
