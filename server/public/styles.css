@@ -121,6 +121,10 @@ img {
     text-align: right !important;
   }
 
+  .desktop-hidden {
+    display: none;
+  }
+
   .hidden {
     display: block;
   }

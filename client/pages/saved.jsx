@@ -77,10 +77,10 @@ function CreateSavedRunLi(savedRun) {
   return (
     <Container key={savedRun.runId}>
       <Row className='desktop-row small mt-1'>
-        <Col xs={4}>
-          <p className='mb-1 secondary text-secondary desktop-text-left'>{result}</p>
+        <Col xs={0} md={5}>
+          <p className='mb-1 secondary text-secondary desktop-text-left hidden'>{result}</p>
         </Col>
-        <Col xs={8} className="text-end text-secondary desktop-text-right">
+        <Col xs={12} md={7} className="text-secondary desktop-text-right">
           <p className='mb-1'>{distance} miles {time} time {pace} pace</p>
         </Col>
       </Row>
@@ -93,6 +93,11 @@ function CreateSavedRunLi(savedRun) {
         </Col>
         <Col className="hidden">
           <Image src={savedRun.afterImageUrl} fluid="true" rounded="true" />
+        </Col>
+      </Row>
+      <Row className='desktop-row small mt-1'>
+        <Col>
+          <p className='mb-1 secondary text-secondary desktop-hidden'>{result}</p>
         </Col>
       </Row>
       <Row>
