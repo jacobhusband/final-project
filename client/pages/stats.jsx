@@ -46,16 +46,17 @@ export default class Stats extends React.Component {
   }
 
   modifyTime(seconds) {
-    const clockSeconds = seconds % 60;
+    let clockSeconds = (seconds % 60).toString();
     const minutes = Math.trunc(seconds / 60);
-    const clockMinutes = minutes % 60;
-    const hours = Math.trunc(minutes / 60);
-    if (!hours && !minutes) {
-      return `${clockSeconds} seconds`;
-    } else if (!hours) {
-      return `${clockMinutes} minutes, ${clockSeconds} seconds`;
+    let clockMinutes = (minutes % 60).toString();
+    let hours = (Math.trunc(minutes / 60)).toString();
+    if (clockSeconds.length !== 2) clockSeconds = '0' + clockSeconds;
+    if (clockMinutes.length !== 2) clockMinutes = '0' + clockMinutes;
+    if (hours.length !== 2) hours = '0' + hours;
+    if (hours === '00') {
+      return `${clockMinutes}:${clockSeconds}`;
     }
-    return `${hours} hours, ${clockMinutes} minutes, ${clockSeconds} seconds`;
+    return `${hours}:${clockMinutes}:${clockSeconds}`;
   }
 
   findDistance(lat1, lat2, lng1, lng2) {
@@ -93,10 +94,10 @@ export default class Stats extends React.Component {
         }
         const time = this.modifyTime(Math.trunc(end - start));
         let pace;
-        if (parseInt(distance)) {
+        if (Number(distance)) {
           pace = this.modifyTime(Math.trunc((end - start) / distance));
         } else {
-          pace = 'Not available';
+          pace = '00:00';
         }
         this.setState({
           time,
@@ -111,7 +112,9 @@ export default class Stats extends React.Component {
     if (this.state.redirect) return <Redirect to="saved" />;
     if (this.state.pace === null || this.props.postImageUrl === null || this.props.preImageUrl === null) return;
 
-    const pace = (this.state.pace === 'Not available') ? this.state.pace : this.state.pace + ' per mile';
+    const pace = this.state.pace + ' pace';
+    const time = this.state.time + ' time';
+    const distance = this.state.distance + ' miles';
 
     return (
       <div className="stats">
@@ -131,9 +134,9 @@ export default class Stats extends React.Component {
           <div className="container">
             <h1 className='fw-bold m-3'>Statistics</h1>
             <h4 className='fw-bold m-2 mb-1'>DISTANCE</h4>
-            <p className='h4 m-2 mt-1 mb-4'>{this.state.distance + ' miles'}</p>
+            <p className='h4 m-2 mt-1 mb-4'>{distance}</p>
             <h4 className='fw-bold m-2 mb-1'>TIME</h4>
-            <p className='h4 m-2 mt-1 mb-4'>{this.state.time}</p>
+            <p className='h4 m-2 mt-1 mb-4'>{time}</p>
             <h4 className='fw-bold m-2 mb-1'>PACE</h4>
             <p className='h4 m-2 mt-1 mb-4'>{pace}</p>
             <div className='images d-flex justify-content-around'>
