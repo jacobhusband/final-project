@@ -25,7 +25,7 @@ export default class Stats extends React.Component {
     });
   }
 
-  saveRun() {
+  saveRun(event) {
     const { distance, time, pace } = this.state;
     const { preImageUrl, postImageUrl } = this.props;
     getMany(['mapImg', 'latlng']).then(([mapImg, latlng]) => {
@@ -38,9 +38,17 @@ export default class Stats extends React.Component {
         body: JSON.stringify({ preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace })
       };
       fetch('/api/runs', details).then(result => result.json()).then(data => {
-        this.setState({
-          redirect: true
-        });
+        if (event.target.textContent === 'Save') {
+          this.setState({
+            redirect: 'saved'
+          });
+        }
+        if (event.target.textContent === 'Post') {
+          this.props.saveRunId(data.runId);
+          this.setState({
+            redirect: 'post'
+          });
+        }
       }).catch(err => console.error(err));
     }).catch(err => console.error(err));
   }
@@ -110,7 +118,8 @@ export default class Stats extends React.Component {
   }
 
   render() {
-    if (this.state.redirect) return <Redirect to="saved" />;
+    if (this.state.redirect === 'saved') return <Redirect to="saved" />;
+    if (this.state.redirect === 'post') return <Redirect to="post" />;
     if (this.state.pace === null || this.props.postImageUrl === null || this.props.preImageUrl === null) return;
 
     const pace = this.state.pace + ' pace';
@@ -150,6 +159,7 @@ export default class Stats extends React.Component {
             </div>
             <div className="buttons mt-1">
               <Button className='m-2' onClick={this.saveRun}>Save</Button>
+              <Button className='m-2' onClick={this.saveRun}>Post</Button>
             </div>
           </div>
         </div>

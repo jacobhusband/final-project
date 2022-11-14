@@ -110,7 +110,7 @@ img {
 
   .saved-runs .desktop-row {
     font-size: large;
-    margin: 0.5rem 0 !important;
+    margin-top: 0.5rem !important;
   }
 
   .saved-runs .desktop-text-right {
