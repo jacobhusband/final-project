@@ -64,6 +64,16 @@ export default class Saved extends React.Component {
 }
 
 function CreateSavedRunLi(savedRun) {
+  // const { ranAt, distance, time, pace } = savedRun;
+
+  // let currentTime = new Date().toLocaleString('en-US', { hour12: false }).split(',');
+
+  // const times = ranAt.split('T');
+  // const date = times[0];
+  // const clockTime = times[1].split('.')[0];
+
+  // findTimeDifference(currentTime[0], currentTime[1].slice(1), date, clockTime)
+
   return (
     <Container key={savedRun.runId}>
       <Row>
@@ -77,3 +87,9 @@ function CreateSavedRunLi(savedRun) {
     </Container>
   );
 }
+
+// function findTimeDifference(currDate, currTime, date, time) {
+//   // const splitCurrDate = currDate.split('/');
+//   // const organizedCurrDate = [splitCurrDate[2], splitCurrDate[0], splitCurrDate[1]];
+//   // const splitOldDate = date.split('-');
+// }

@@ -6,13 +6,15 @@ drop schema "public" cascade;
 
 create schema "public";
 
+ALTER DATABASE "finalProject" SET timezone to 'PST8PDT';
+
 CREATE TABLE "public"."accounts" (
 	"accountId" serial NOT NULL,
 	"username" TEXT NOT NULL UNIQUE,
 	"hashedPassword" TEXT NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
 	"isEmailVerified" BOOLEAN NOT NULL,
-	"joinedAt" timestamp with time zone default CURRENT_TIMESTAMP,
+	"joinedAt" timestamp default CURRENT_TIMESTAMP,
 	CONSTRAINT "accounts_pk" PRIMARY KEY ("accountId")
 ) WITH (
   OIDS=FALSE
@@ -23,7 +25,7 @@ CREATE TABLE "public"."accounts" (
 CREATE TABLE "public"."posts" (
 	"postId" serial NOT NULL,
 	"runId" int NOT NULL,
-	"postedAt" timestamp with time zone NOT NULL,
+	"postedAt" timestamp default CURRENT_TIMESTAMP,
 	"caption" TEXT NOT NULL,
 	CONSTRAINT "posts_pk" PRIMARY KEY ("postId")
 ) WITH (
@@ -36,7 +38,7 @@ CREATE TABLE "public"."comments" (
 	"accountId" int NOT NULL,
 	"postId" int NOT NULL,
 	"content" TEXT NOT NULL,
-	"commentedAt" timestamp with time zone NOT NULL
+	"commentedAt" timestamp default CURRENT_TIMESTAMP
 ) WITH (
   OIDS=FALSE
 );
@@ -70,6 +72,8 @@ CREATE TABLE "public"."runs" (
 	"distance" DECIMAL NOT NULL,
 	"time" TEXT NOT NULL,
 	"arrayOfCoords" json NOT NULL,
+  "ranAt" timestamp default CURRENT_TIMESTAMP,
+  "pace" TEXT NOT NULL,
 	CONSTRAINT "runs_pk" PRIMARY KEY ("runId")
 ) WITH (
   OIDS=FALSE

@@ -41,17 +41,17 @@ app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
 });
 
 app.post('/api/runs', (req, res, next) => {
-  const { preImageUrl, postImageUrl, mapImg, distance, time, latlng } = req.body;
+  const { preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace } = req.body;
 
-  if (preImageUrl === undefined || postImageUrl === undefined || mapImg === undefined || distance === undefined || time === undefined || latlng === undefined) {
+  if (preImageUrl === undefined || postImageUrl === undefined || mapImg === undefined || distance === undefined || time === undefined || latlng === undefined || pace === undefined) {
     throw new ClientError(400, 'Missing one of the images, distance, time, or coordinates');
   }
 
   const sql = `
-  insert into "public"."runs" ("accountId", "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords")
-  values (1, $1, $2, $3, $4, $5, $6);
+  insert into "public"."runs" ("accountId", "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords", "pace")
+  values (1, $1, $2, $3, $4, $5, $6, $7);
   `;
-  const params = [preImageUrl, postImageUrl, mapImg, distance, time, JSON.stringify(latlng)];
+  const params = [preImageUrl, postImageUrl, mapImg, distance, time, JSON.stringify(latlng), pace];
 
   db.query(sql, params)
     .then(result => {

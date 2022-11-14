@@ -26,7 +26,7 @@ export default class Stats extends React.Component {
   }
 
   saveRun() {
-    const { distance, time } = this.state;
+    const { distance, time, pace } = this.state;
     const { preImageUrl, postImageUrl } = this.props;
     getMany(['mapImg', 'latlng']).then(([mapImg, latlng]) => {
       const details = {
@@ -35,7 +35,7 @@ export default class Stats extends React.Component {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ preImageUrl, postImageUrl, mapImg, distance, time, latlng })
+        body: JSON.stringify({ preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace })
       };
       fetch('/api/runs', details).then(result => result.json()).then(data => {
         this.setState({
