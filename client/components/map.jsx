@@ -1,7 +1,5 @@
 import React from 'react';
-import { get } from 'idb-keyval';
-
-const MILES_PER_PX_TO_ZOOM_RATIO = 0.060470747293397;
+import { get, set } from 'idb-keyval';
 
 export default class Map extends React.Component {
   constructor(props) {
@@ -9,6 +7,7 @@ export default class Map extends React.Component {
     this.state = {
       url: null
     };
+    this.MILES_PER_PX_TO_ZOOM_RATIO = 0.060470747293397;
   }
 
   calculateCenter(arr) {
@@ -30,7 +29,7 @@ export default class Map extends React.Component {
     const { minLat, minLng, maxLat, maxLng } = centerMinMaxObj;
     const miles = this.findDistance(minLat, maxLat, minLng, maxLng);
     const milesPerPx = miles / window.innerWidth;
-    let zoom = (MILES_PER_PX_TO_ZOOM_RATIO * Math.cos(center.lat * Math.PI / 180) / milesPerPx) ** (1 / 2);
+    let zoom = (this.MILES_PER_PX_TO_ZOOM_RATIO * Math.cos(center.lat * Math.PI / 180) / milesPerPx) ** (1 / 2);
     if (zoom > 22) {
       zoom = 22;
     } else {
@@ -51,9 +50,13 @@ export default class Map extends React.Component {
       });
       const pathStyle = 'color:black';
       const strCoords = pathStyle + path.join('');
-      this.setState({
-        url: `https://maps.googleapis.com/maps/api/staticmap?center=${mapCenter.lat},${mapCenter.lng}&zoom=${zoom}&size=${window.innerWidth}x${Math.trunc(window.innerHeight * 0.3)}&key=${process.env.API}&path=${strCoords}`
-      });
+      const url = `https://maps.googleapis.com/maps/api/staticmap?center=${mapCenter.lat},${mapCenter.lng}&zoom=${zoom}&size=${window.innerWidth}x${window.innerWidth}&key=${process.env.API}&path=${strCoords}`;
+      set('mapImg', url).then(res => {
+        this.props.saveMapImage(url);
+        this.setState({
+          url
+        });
+      }).catch(err => console.error(err));
     }).catch(err => console.error(err));
   }
 

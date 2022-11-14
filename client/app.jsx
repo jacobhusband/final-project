@@ -6,13 +6,38 @@ import Home from './pages/home';
 import Photo from './pages/photo';
 import Warning from './pages/warning';
 import Stats from './pages/stats';
+import Saved from './pages/saved';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      route: parseRoute(window.location.hash)
+      route: parseRoute(window.location.hash),
+      preImageUrl: null,
+      postImageUrl: null
     };
+    this.savePreImage = this.savePreImage.bind(this);
+    this.savePostImage = this.savePostImage.bind(this);
+    this.resetSavedImages = this.resetSavedImages.bind(this);
+  }
+
+  savePreImage(preImageUrl) {
+    this.setState({
+      preImageUrl
+    });
+  }
+
+  savePostImage(postImageUrl) {
+    this.setState({
+      postImageUrl
+    });
+  }
+
+  resetSavedImages() {
+    this.setState({
+      preImageUrl: null,
+      postImageUrl: null
+    });
   }
 
   registerServiceWorker() {
@@ -46,15 +71,17 @@ export default class App extends React.Component {
     } else if (route.path === 'home') {
       return <Home />;
     } else if (route.path === 'prePhoto') {
-      return <Photo to="pre" />;
+      return <Photo to="pre" savePreImage={this.savePreImage} preImageUrl={this.state.preImageUrl} />;
     } else if (route.path === 'warning') {
       return <Warning />;
     } else if (route.path === 'timer') {
       return <Run phase="timer" />;
     } else if (route.path === 'stats') {
-      return <Stats />;
+      return <Stats preImageUrl={this.state.preImageUrl} postImageUrl={this.state.postImageUrl} />;
     } else if (route.path === 'postPhoto') {
-      return <Photo to="post" />;
+      return <Photo to="post" savePostImage={this.savePostImage} postImageUrl={this.state.postImageUrl} />;
+    } else if (route.path === 'saved') {
+      return <Saved resetSavedImages={this.resetSavedImages} />;
     }
   }
 

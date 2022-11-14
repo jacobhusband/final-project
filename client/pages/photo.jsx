@@ -1,10 +1,12 @@
 import React from 'react';
 import Navbar from '../components/navbar';
 import Webcam from 'react-webcam';
+import { b64toFile } from 'b64-to-file';
 import { set } from 'idb-keyval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera, faRotate, faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
+import Redirect from '../components/redirect';
 
 const videoConstraints = {
   width: `${window.innerWidth}`,
@@ -36,17 +38,31 @@ export default class Photo extends React.Component {
   }
 
   indexImage() {
-    if (this.props.to === 'pre') {
-      set('preImage', this.state.image)
-        .then(() => {
-        })
-        .catch(err => console.error(`there is a ${err}`));
-    } else if (this.props.to === 'post') {
-      set('postImage', this.state.image)
-        .then(() => {
-        })
-        .catch(err => console.error(`there is a ${err}`));
-    }
+    const form = new FormData();
+    const image = b64toFile(this.state.image, 'runImage');
+    form.append('image', image);
+    const details = {
+      method: 'POST',
+      body: form
+    };
+    fetch('/api/uploads', details)
+      .then(res => res.json())
+      .then(obj => {
+        if (this.props.to === 'pre') {
+          set('preImage', obj.url)
+            .then(() => {
+              this.props.savePreImage(obj.url);
+            })
+            .catch(err => console.error(`there is a ${err}`));
+        } else if (this.props.to === 'post') {
+          set('postImage', obj.url)
+            .then(() => {
+              this.props.savePostImage(obj.url);
+            })
+            .catch(err => console.error(`there is a ${err}`));
+        }
+      })
+      .catch(err => console.error(err));
   }
 
   retakePhoto() {
@@ -66,18 +82,11 @@ export default class Photo extends React.Component {
   }
 
   PhotoTaken() {
-    let checkRef;
-
-    if (this.props.to === 'pre') {
-      checkRef = '#timer';
-    } else {
-      checkRef = '#stats';
-    }
 
     return (
       <>
         <img src={this.state.image} alt="Pre Run Image" />
-        <PictureButtons onRetakeClick={this.retakePhoto} onIndexClick={this.indexImage} checkRef={checkRef} />
+        <PictureButtons onRetakeClick={this.retakePhoto} onIndexClick={this.indexImage} />
       </>
     );
   }
@@ -97,6 +106,9 @@ export default class Photo extends React.Component {
   }
 
   render() {
+    if (this.props.preImageUrl) return <Redirect to="timer" />;
+    if (this.props.postImageUrl) return <Redirect to="stats" />;
+
     let image;
     let headerText;
     if (this.state.image && this.props.to === 'pre') {
@@ -144,13 +156,12 @@ function CameraButtons(props) {
 }
 
 function PictureButtons(props) {
-  const { onIndexClick, onRetakeClick, checkRef } = props;
+  const { onIndexClick, onRetakeClick } = props;
 
   return (
     <div className='buttons align-middle mt-2' style={{ height: window.innerHeight * 0.08 }}>
       <Button
         className="m-2"
-        href={checkRef}
         onClick={onIndexClick}
       >{check}</Button>
       <Button

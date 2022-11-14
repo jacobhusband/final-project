@@ -47,11 +47,12 @@ const cacheFirst = async ({ request, fallbackUrl }) => {
 };
 
 self.addEventListener('fetch', event => {
-  if (!(event.request.url.indexOf('http') === 0) || event.request.url.includes('fonts')) return;
-  event.respondWith(
-    cacheFirst({
-      request: event.request,
-      fallbackUrl: './images/splash.webp'
-    })
-  );
+  if (event.request.url.indexOf('http') === 0) {
+    event.respondWith(
+      cacheFirst({
+        request: event.request,
+        fallbackUrl: './images/splash.webp'
+      })
+    );
+  }
 });
