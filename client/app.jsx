@@ -78,6 +78,12 @@ export default class App extends React.Component {
   }
 
   render() {
+    if (this.state.route.path === 'saved') {
+      this.setState({
+        preImageUrl: null,
+        postImageUrl: null
+      });
+    }
     return (
       <>
         {this.renderPage()}
