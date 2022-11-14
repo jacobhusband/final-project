@@ -20,7 +20,7 @@ app.use(staticMiddleware);
 
 app.get('/api/runs', (req, res, next) => {
   const sql = `
-  select "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords"
+  select *
   from "runs"
   where "accountId" = $1;
   `;

@@ -15,7 +15,7 @@ export default class NavbarItem extends React.Component {
         <Container>
           <Navbar.Brand href="#">RunnerFuze</Navbar.Brand>
           <a className='left-nav nav-item nav-link' href="#saved">{bookmark}</a>
-          <a className='nav-item nav-link' href="#">{home}</a>
+          <a className='nav-item nav-link' href="#home">{home}</a>
         </Container>
       </Navbar>
     );

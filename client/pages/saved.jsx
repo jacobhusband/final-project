@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import Stack from 'react-bootstrap/Stack';
-import { Container, Row, Col, Image } from 'react-bootstrap';
+import { Container, Row, Col, Image, Dropdown } from 'react-bootstrap';
 
 export default class Saved extends React.Component {
   constructor(props) {
@@ -28,22 +28,44 @@ export default class Saved extends React.Component {
       return CreateSavedRunLi(savedRun);
     });
 
+    const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+      <a
+        href=""
+        ref={ref}
+        onClick={e => {
+          e.preventDefault();
+          onClick(e);
+        }}
+      >
+        {ellipsisV}
+        {children}
+      </a>
+    ));
+
+    CustomToggle.displayName = 'Ellipsis Dropdown';
+
     return (
       <div className='saved-runs'>
         <div className="text-end p-3 border-bottom border-secondary">
-          {ellipsisV}
+          <Dropdown >
+            <Dropdown.Toggle as={CustomToggle} />
+            <Dropdown.Menu size="sm" title="">
+              <Dropdown.Header>Options</Dropdown.Header>
+              <Dropdown.Item href="#home">Home</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
         <Stack>
           {listItems}
         </Stack>
-      </div>
+      </div >
     );
   }
 }
 
 function CreateSavedRunLi(savedRun) {
   return (
-    <Container>
+    <Container key={savedRun.runId}>
       <Row>
         <Col>
           <Image src={savedRun.beforeImageUrl} fluid="true" rounded="true" />

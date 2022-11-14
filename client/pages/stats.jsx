@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/navbar';
 import Map from '../components/map';
 import Button from 'react-bootstrap/Button';
+import Redirect from '../components/redirect';
 import { get, getMany } from 'idb-keyval';
 
 export default class Stats extends React.Component {
@@ -11,7 +12,8 @@ export default class Stats extends React.Component {
       distance: null,
       time: null,
       pace: null,
-      mapImage: null
+      mapImage: null,
+      redirect: null
     };
     this.saveRun = this.saveRun.bind(this);
     this.saveMapImage = this.saveMapImage.bind(this);
@@ -36,6 +38,9 @@ export default class Stats extends React.Component {
         body: JSON.stringify({ preImageUrl, postImageUrl, mapImg, distance, time, latlng })
       };
       fetch('/api/runs', details).then(result => result.json()).then(data => {
+        this.setState({
+          redirect: true
+        });
       }).catch(err => console.error(err));
     }).catch(err => console.error(err));
   }
@@ -80,7 +85,12 @@ export default class Stats extends React.Component {
         }
         const start = arr[0].time;
         const end = arr[arr.length - 1].time;
-        const distance = newDistances.reduce((x, y) => x + y).toFixed(2);
+        let distance;
+        if (newDistances.length > 1) {
+          distance = newDistances.reduce((x, y) => x + y, 0).toFixed(2);
+        } else {
+          distance = (0).toFixed(2);
+        }
         const time = this.modifyTime(Math.trunc(end - start));
         let pace;
         if (parseInt(distance)) {
@@ -98,6 +108,7 @@ export default class Stats extends React.Component {
   }
 
   render() {
+    if (this.state.redirect) return <Redirect to="saved" />;
     if (this.state.pace === null || this.props.postImageUrl === null || this.props.preImageUrl === null) return;
 
     const pace = (this.state.pace === 'Not available') ? this.state.pace : this.state.pace + ' per mile';
@@ -134,7 +145,7 @@ export default class Stats extends React.Component {
               </div>
             </div>
             <div className="buttons mt-1">
-              <Button href='#saved' className='m-2' onClick={this.saveRun}>Save</Button>
+              <Button className='m-2' onClick={this.saveRun}>Save</Button>
             </div>
           </div>
         </div>
