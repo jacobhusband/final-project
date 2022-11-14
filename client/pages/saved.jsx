@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import Stack from 'react-bootstrap/Stack';
-import { Container, Row, Col, Image, Dropdown, Button } from 'react-bootstrap';
+import { Container, Row, Col, Image, Dropdown } from 'react-bootstrap';
 
 export default class Saved extends React.Component {
   constructor(props) {
@@ -77,11 +77,11 @@ function CreateSavedRunLi(savedRun) {
 
   return (
     <Container key={savedRun.runId}>
-      <Row className='small mt-1'>
+      <Row className='desktop-row small mt-1'>
         <Col xs={4}>
-          <p className='mb-1 secondary text-secondary'>{timeDiff}</p>
+          <p className='mb-1 secondary text-secondary desktop-text-left'>{timeDiff}</p>
         </Col>
-        <Col xs={8} className="text-end text-secondary">
+        <Col xs={8} className="text-end text-secondary desktop-text-right">
           <p className='mb-1'>{distance} miles {time} time {pace} pace</p>
         </Col>
       </Row>
@@ -92,12 +92,12 @@ function CreateSavedRunLi(savedRun) {
         <Col>
           <Image src={savedRun.routeImageUrl} fluid="true" rounded="true" />
         </Col>
+        <Col className="hidden">
+          <Image src={savedRun.afterImageUrl} fluid="true" rounded="true" />
+        </Col>
       </Row>
       <Row>
-        <Col className="text-center">
-          <Button variant="link">Post</Button>
-          <Button variant="link" className='text-danger'>Delete</Button>
-        </Col>
+        <Col className="text-center" />
       </Row>
     </Container>
   );
@@ -124,6 +124,9 @@ function findTimeDifference(currDate, currTime, date, time) {
     [timeSinceRan, text] = findSubTimeDifference(currHour, ranHour, currMinute, ranMinute, 'hour', 'minute', 60);
   } else if (currMinute !== ranMinute) {
     [timeSinceRan, text] = findSubTimeDifference(currMinute, ranMinute, currSecond, ranSecond, 'minute', 'second', 60);
+  } else {
+    timeSinceRan = currSecond - ranSecond;
+    text = 'second';
   }
 
   if (timeSinceRan === 1) {

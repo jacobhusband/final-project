@@ -81,19 +81,20 @@ export default class Stats extends React.Component {
     get('latlng')
       .then(arr => {
         const newDistances = [];
+        let distance, pace;
         for (let i = 1; i < arr.length; i++) {
           newDistances.push(this.findDistance(arr[i - 1].lat, arr[i].lat, arr[i - 1].lng, arr[i].lng));
         }
         const start = arr[0].time;
         const end = arr[arr.length - 1].time;
-        let distance;
         if (newDistances.length > 1) {
           distance = newDistances.reduce((x, y) => x + y, 0).toFixed(2);
+        } else if (newDistances.length === 1) {
+          distance = newDistances[0].toFixed(2);
         } else {
           distance = (0).toFixed(2);
         }
         const time = this.modifyTime(Math.trunc(end - start));
-        let pace;
         if (Number(distance)) {
           pace = this.modifyTime(Math.trunc((end - start) / distance));
         } else {

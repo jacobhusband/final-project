@@ -75,6 +75,10 @@ img {
   padding: 0 2rem;
 }
 
+.hidden {
+  display: none;
+}
+
 @media only screen and (min-width: 768px) {
   .stats .images {
     display: none !important;
@@ -102,5 +106,22 @@ img {
   .stats .map-image img {
     height: 200px;
     object-fit: cover;
+  }
+
+  .saved-runs .desktop-row {
+    font-size: large;
+    margin: 0.5rem 0 !important;
+  }
+
+  .saved-runs .desktop-text-right {
+    text-align: left !important;
+  }
+
+  .saved-runs .desktop-text-left {
+    text-align: right !important;
+  }
+
+  .hidden {
+    display: block;
   }
 }
