@@ -18,6 +18,7 @@ export default class App extends React.Component {
     };
     this.savePreImage = this.savePreImage.bind(this);
     this.savePostImage = this.savePostImage.bind(this);
+    this.resetSavedImages = this.resetSavedImages.bind(this);
   }
 
   savePreImage(preImageUrl) {
@@ -29,6 +30,13 @@ export default class App extends React.Component {
   savePostImage(postImageUrl) {
     this.setState({
       postImageUrl
+    });
+  }
+
+  resetSavedImages() {
+    this.setState({
+      preImageUrl: null,
+      postImageUrl: null
     });
   }
 
@@ -73,17 +81,11 @@ export default class App extends React.Component {
     } else if (route.path === 'postPhoto') {
       return <Photo to="post" savePostImage={this.savePostImage} postImageUrl={this.state.postImageUrl} />;
     } else if (route.path === 'saved') {
-      return <Saved />;
+      return <Saved resetSavedImages={this.resetSavedImages} />;
     }
   }
 
   render() {
-    if (this.state.route.path === 'saved') {
-      this.setState({
-        preImageUrl: null,
-        postImageUrl: null
-      });
-    }
     return (
       <>
         {this.renderPage()}
