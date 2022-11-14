@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import Stack from 'react-bootstrap/Stack';
 import { Container, Row, Col, Image, Dropdown } from 'react-bootstrap';
+import formatDistance from 'date-fns/formatDistance';
 
 export default class Saved extends React.Component {
   constructor(props) {
@@ -37,7 +38,7 @@ export default class Saved extends React.Component {
           e.preventDefault();
           onClick(e);
         }}
-        className='text-dark'
+        className='text-dark p-2'
       >
         {ellipsisV}
         {children}
@@ -49,7 +50,7 @@ export default class Saved extends React.Component {
     return (
       <div className='saved-runs'>
         <div className="text-end p-3 border-bottom border-secondary">
-          <Dropdown >
+          <Dropdown>
             <Dropdown.Toggle as={CustomToggle} />
             <Dropdown.Menu size="sm" title="">
               <Dropdown.Header>Options</Dropdown.Header>
@@ -68,19 +69,16 @@ export default class Saved extends React.Component {
 function CreateSavedRunLi(savedRun) {
   const { ranAt, distance, time, pace } = savedRun;
 
-  const currentTime = new Date().toLocaleString('en-US', { hour12: false }).split(',');
+  const now = new Date();
+  const then = new Date(ranAt);
 
-  const times = ranAt.split('T');
-  const date = times[0];
-  const clockTime = times[1].split('.')[0];
-
-  const timeDiff = findTimeDifference(currentTime[0], currentTime[1].slice(1), date, clockTime);
+  const result = formatDistance(then, now, { includeSeconds: true, addSuffix: true });
 
   return (
     <Container key={savedRun.runId}>
       <Row className='desktop-row small mt-1'>
         <Col xs={4}>
-          <p className='mb-1 secondary text-secondary desktop-text-left'>{timeDiff}</p>
+          <p className='mb-1 secondary text-secondary desktop-text-left'>{result}</p>
         </Col>
         <Col xs={8} className="text-end text-secondary desktop-text-right">
           <p className='mb-1'>{distance} miles {time} time {pace} pace</p>
@@ -102,57 +100,4 @@ function CreateSavedRunLi(savedRun) {
       </Row>
     </Container>
   );
-}
-
-function findTimeDifference(currDate, currTime, date, time) {
-  let timeSinceRan = 0;
-  let text;
-  const splitCurrDate = currDate.split('/');
-  const organizedCurrDate = [splitCurrDate[2], splitCurrDate[0], splitCurrDate[1]];
-  const splitOldDate = date.split('-');
-  const [currYear, currMonth, currDay] = organizedCurrDate.map(date => parseInt(date));
-  const [ranYear, ranMonth, ranDay] = splitOldDate.map(date => parseInt(date));
-  const [currHour, currMinute, currSecond] = currTime.split(':').map(time => parseInt(time));
-  const [ranHour, ranMinute, ranSecond] = time.split(':').map(time => parseInt(time));
-
-  if (currYear !== ranYear) {
-    [timeSinceRan, text] = findSubTimeDifference(currYear, ranYear, currMonth, ranMonth, 'year', 'month', 12);
-  } else if (currMonth !== ranMonth) {
-    [timeSinceRan, text] = findSubTimeDifference(currMonth, ranMonth, currDay, ranDay, 'month', 'day', 30);
-  } else if (currDay !== ranDay) {
-    [timeSinceRan, text] = findSubTimeDifference(currDay, ranDay, currHour, ranHour, 'day', 'hour', 24);
-  } else if (currHour !== ranHour) {
-    [timeSinceRan, text] = findSubTimeDifference(currHour, ranHour, currMinute, ranMinute, 'hour', 'minute', 60);
-  } else if (currMinute !== ranMinute) {
-    [timeSinceRan, text] = findSubTimeDifference(currMinute, ranMinute, currSecond, ranSecond, 'minute', 'second', 60);
-  } else {
-    timeSinceRan = currSecond - ranSecond;
-    text = 'second';
-  }
-
-  if (timeSinceRan === 1) {
-    timeSinceRan += ` ${text} ago`;
-  } else {
-    timeSinceRan += ` ${text}s ago`;
-  }
-
-  return timeSinceRan;
-}
-
-function findSubTimeDifference(currLong, pastLong, currShort, pastShort, longTime, shortTime, time) {
-  let text;
-  let timeSinceRan;
-  if (currLong - pastLong === 1) {
-    text = shortTime;
-    if (currShort < pastShort) {
-      timeSinceRan = currShort + (time - pastShort);
-    } else {
-      timeSinceRan = 1;
-      text = longTime;
-    }
-  } else {
-    timeSinceRan = currLong - pastLong;
-    text = longTime;
-  }
-  return [timeSinceRan, text];
 }

@@ -19,6 +19,7 @@
     "argon2": "^0.29.1",
     "b64-to-file": "^1.0.4",
     "bootstrap": "^5.2.2",
+    "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "idb-keyval": "^6.2.0",
