@@ -109,8 +109,18 @@ export default class Post extends React.Component {
     const afterObj = { img: afterImageUrl, order: afterImageUrlOrder, showing: afterImageUrlShowing, id: 'afterImageUrl' };
 
     const imgArray = [beforeObj, routeObj, afterObj];
+    const sortedImgArray = [];
 
-    const carouselItems = imgArray.map((obj, index) => {
+    for (let j = 0; j < 3; j++) {
+      for (let i = 0; i < 3; i++) {
+        if (imgArray[i].order === j + 1) {
+          sortedImgArray.push(imgArray[i]);
+          break;
+        }
+      }
+    }
+
+    const carouselItems = sortedImgArray.map((obj, index) => {
       const icon = (obj.showing) ? minus : plus;
       const modalClass = (obj.showing) ? 'carousel-modal position-absolute hidden' : 'carousel-modal position-absolute';
       return (
