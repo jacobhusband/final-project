@@ -105,6 +105,7 @@ app.get('/api/posts', (req, res, next) => {
   const sql = `
     select *
     from "posts"
+    join "runs" using ("runId")
     order by "postedAt";
   `;
 

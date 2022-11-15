@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from '../components/navbar';
+import RunInfo from '../components/runInfo';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -20,8 +21,15 @@ export default class Home extends React.Component {
   render() {
     if (!this.state.postData) return;
 
+    const posts = this.state.postData.map(postData => {
+      return <RunInfo key={postData.postId} postData={postData} />;
+    });
+
     return (
-      <Navbar />
+      <div className="home-page">
+        <Navbar />
+        {posts}
+      </div>
     );
   }
 }
