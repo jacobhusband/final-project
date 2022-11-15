@@ -1,7 +1,8 @@
 import React from 'react';
-import { Carousel, Row, Col, Button } from 'react-bootstrap';
+import { Carousel, Container, Row, Col, Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faChevronLeft, faChevronRight, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import formatDistance from 'date-fns/formatDistance';
 
 export default class Post extends React.Component {
   constructor(props) {
@@ -122,6 +123,13 @@ export default class Post extends React.Component {
       }
     }
 
+    const { ranAt, distance, time, pace } = this.state.runData;
+
+    const now = new Date();
+    const then = new Date(ranAt);
+
+    const result = formatDistance(then, now, { includeSeconds: true, addSuffix: true });
+
     const carouselItems = sortedImgArray.map((obj, index) => {
       const icon = (obj.showing) ? minus : plus;
       const modalClass = (obj.showing) ? 'carousel-modal position-absolute hidden' : 'carousel-modal position-absolute';
@@ -161,6 +169,33 @@ export default class Post extends React.Component {
         <Carousel interval={null}>
           {carouselItems}
         </Carousel>
+        <Container className='text-center'>
+          <Row className='desktop-row medium mt-2'>
+            <Col xs={0} md={5}>
+              <p className='mb-1 secondary text-secondary desktop-text-left hidden'>{result}</p>
+            </Col>
+            <Col xs={12} md={7} className="text-secondary desktop-text-right">
+              <p className='mb-0'>{distance} miles {time} time {pace} pace</p>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form>
+                <Form.Group className="mb-1 mt-1 text-start" controlId="formBasicCaption">
+                  <Form.Control as="textarea" placeholder="enter a description" rows={5} />
+                </Form.Group>
+              </Form>
+            </Col>
+          </Row>
+          <Row className='desktop-row medium mt-0'>
+            <Col xs={3} className="text-start mt-1">
+              <Button>Post</Button>
+            </Col>
+            <Col xs={9}>
+              <p className='mb-1 secondary text-secondary small desktop-hidden text-end'>saved {result}</p>
+            </Col>
+          </Row>
+        </Container>
       </div>
     );
   }
