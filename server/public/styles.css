@@ -119,6 +119,13 @@ img {
   opacity: 0.5;
 }
 
+.new-post .times {
+  background-color: white;
+  border: none;
+  padding: 0.15rem;
+  margin-bottom: 0;
+}
+
 .desktop-image {
   display: none;
 }

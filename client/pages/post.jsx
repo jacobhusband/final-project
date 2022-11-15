@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel, Row, Col } from 'react-bootstrap';
+import { Carousel, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faChevronLeft, faChevronRight, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
@@ -93,7 +93,9 @@ export default class Post extends React.Component {
   render() {
     if (!this.state.runData) return;
 
-    const times = <FontAwesomeIcon icon={faTimes} size="xl" />;
+    const times = <Button href="#saved" className="times text-dark">
+      <FontAwesomeIcon icon={faTimes} size="xl" />
+    </Button>;
     const leftChevron = <FontAwesomeIcon icon={faChevronLeft} className='p-1' />;
     const rightChevron = <FontAwesomeIcon icon={faChevronRight} className='p-1' />;
     const plus = <FontAwesomeIcon icon={faPlus} />;
@@ -149,10 +151,10 @@ export default class Post extends React.Component {
       <div className='new-post'>
         <Row>
           <Col xs={3} md={3} />
-          <Col xs={6} md={6} className="text-center mt-2 mb-2">
-            <h3 className='mb-0 mt-0 fw-normal'>New Post</h3>
+          <Col xs={6} md={6} className="text-center mt-3 mb-2">
+            <h3 className='mb-0 mt-0'>New Post</h3>
           </Col>
-          <Col xs={2} md={2} className="text-end p-1 mt-1 fw-bold">
+          <Col xs={2} md={2} className="text-end p-1 mt-2 fw-bold">
             {times}
           </Col>
         </Row>
