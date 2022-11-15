@@ -103,7 +103,7 @@ function CreateSavedRunLi(props) {
 
       <Row>
         <Col className="text-center">
-          <Button variant='link' onClick={e => { props.saveRunId(props.savedRun.runId); }}>Post</Button>
+          <Button variant='link' onClick={() => { props.saveRunId(props.savedRun.runId); }} href="#post">Post</Button>
         </Col>
       </Row>
     </Container>
