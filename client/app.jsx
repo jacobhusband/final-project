@@ -16,12 +16,21 @@ export default class App extends React.Component {
       route: parseRoute(window.location.hash),
       preImageUrl: null,
       postImageUrl: null,
-      runId: null
+      runId: null,
+      postInfo: {
+        beforeImageUrlOrder: 1,
+        routeImageUrlOrder: 2,
+        afterImageUrlOrder: 3,
+        beforeImageUrlShowing: true,
+        routeImageUrlShowing: true,
+        afterImageUrlShowing: true
+      }
     };
     this.savePreImage = this.savePreImage.bind(this);
     this.savePostImage = this.savePostImage.bind(this);
     this.resetSavedImages = this.resetSavedImages.bind(this);
     this.saveRunId = this.saveRunId.bind(this);
+    this.updatePostInfo = this.updatePostInfo.bind(this);
   }
 
   savePreImage(preImageUrl) {
@@ -39,6 +48,12 @@ export default class App extends React.Component {
   saveRunId(runId) {
     this.setState({
       runId
+    });
+  }
+
+  updatePostInfo(postInfo) {
+    this.setState({
+      postInfo
     });
   }
 
@@ -92,7 +107,7 @@ export default class App extends React.Component {
     } else if (route.path === 'saved') {
       return <Saved saveRunId={this.saveRunId} resetSavedImages={this.resetSavedImages} />;
     } else if (route.path === 'post') {
-      return <Post runId={this.state.runId} />;
+      return <Post runId={this.state.runId} postInfo={this.state.postInfo} updatePostInfo={this.updatePostInfo} />;
     }
   }
 

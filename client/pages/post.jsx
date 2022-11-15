@@ -9,6 +9,14 @@ export default class Post extends React.Component {
     this.state = {
       runData: null
     };
+    this.updateImgShowing = this.updateImgShowing.bind(this);
+  }
+
+  updateImgShowing(event) {
+    const newPropsPostInfo = Object.assign({}, this.props.postInfo);
+    const imgName = event.target.closest('.carousel-item').id;
+    newPropsPostInfo[`${imgName}Showing`] = !(newPropsPostInfo[`${imgName}Showing`]);
+    this.props.updatePostInfo(newPropsPostInfo);
   }
 
   componentDidMount() {
@@ -28,6 +36,40 @@ export default class Post extends React.Component {
     const plus = <FontAwesomeIcon icon={faPlus} />;
     const minus = <FontAwesomeIcon icon={faMinus} />;
 
+    const { beforeImageUrl, routeImageUrl, afterImageUrl } = this.state.runData;
+    const { beforeImageUrlOrder, beforeImageUrlShowing, routeImageUrlOrder, routeImageUrlShowing, afterImageUrlOrder, afterImageUrlShowing } = this.props.postInfo;
+
+    const beforeObj = { img: beforeImageUrl, order: beforeImageUrlOrder, showing: beforeImageUrlShowing, id: 'beforeImageUrl' };
+
+    const routeObj = { img: routeImageUrl, order: routeImageUrlOrder, showing: routeImageUrlShowing, id: 'routeImageUrl' };
+
+    const afterObj = { img: afterImageUrl, order: afterImageUrlOrder, showing: afterImageUrlShowing, id: 'afterImageUrl' };
+
+    const imgArray = [beforeObj, routeObj, afterObj];
+
+    const carouselItems = imgArray.map((obj, index) => {
+      const icon = (obj.showing) ? minus : plus;
+      return (
+        <Carousel.Item key={index} order={obj.order} showing={obj.showing.toString()} id={obj.id} className="text-light position-relative">
+          <img src={obj.img} />
+          <div className="swap-container d-flex align-items-center position-absolute">
+            <button className='left text-light bg-dark'>
+              {leftChevron}
+            </button>
+            <p className='swap align-self-center mb-0 bg-dark'>SWAP</p>
+            <button className='right text-light bg-dark'>
+              {rightChevron}
+            </button>
+          </div>
+          <div className='choose-container d-flex position-absolute'>
+            <button onClick={this.updateImgShowing} className='text-light bg-dark'>
+              {icon}
+            </button>
+          </div>
+        </Carousel.Item>
+      );
+    });
+
     return (
       <div className='new-post'>
         <Row>
@@ -40,30 +82,7 @@ export default class Post extends React.Component {
           </Col>
         </Row>
         <Carousel interval={null}>
-          <Carousel.Item className="text-light position-relative">
-            <img src={this.state.runData.beforeImageUrl} />
-            <div className="swap-container d-flex align-items-center position-absolute">
-              <button className='left text-light bg-dark'>
-                {leftChevron}
-              </button>
-              <p className='swap align-self-center mb-0 bg-dark'>SWAP</p>
-              <button className='right text-light bg-dark'>
-                {rightChevron}
-              </button>
-            </div>
-            <div className='choose-container d-flex position-absolute'>
-              <button className='text-light bg-dark'>
-                {minus}
-                {plus}
-              </button>
-            </div>
-          </Carousel.Item>
-          <Carousel.Item>
-            <img src={this.state.runData.routeImageUrl} />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img src={this.state.runData.afterImageUrl} />
-          </Carousel.Item>
+          {carouselItems}
         </Carousel>
       </div>
     );
