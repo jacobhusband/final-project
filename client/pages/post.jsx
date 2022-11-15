@@ -1,7 +1,7 @@
 import React from 'react';
 import { Carousel, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faChevronLeft, faChevronRight, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 export default class Post extends React.Component {
   constructor(props) {
@@ -25,6 +25,8 @@ export default class Post extends React.Component {
     const times = <FontAwesomeIcon icon={faTimes} size="xl" />;
     const leftChevron = <FontAwesomeIcon icon={faChevronLeft} className='p-1' />;
     const rightChevron = <FontAwesomeIcon icon={faChevronRight} className='p-1' />;
+    const plus = <FontAwesomeIcon icon={faPlus} />;
+    const minus = <FontAwesomeIcon icon={faMinus} />;
 
     return (
       <div className='new-post'>
@@ -47,6 +49,12 @@ export default class Post extends React.Component {
               <p className='swap align-self-center mb-0 bg-dark'>SWAP</p>
               <button className='right text-light bg-dark'>
                 {rightChevron}
+              </button>
+            </div>
+            <div className='choose-container d-flex position-absolute'>
+              <button className='text-light bg-dark'>
+                {minus}
+                {plus}
               </button>
             </div>
           </Carousel.Item>
