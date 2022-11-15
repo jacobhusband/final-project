@@ -86,7 +86,7 @@ app.post('/api/posts', (req, res, next) => {
   }
 
   const sql = `
-    insert into "public"."posts" ("runId", "caption", "beforeImageUrlOrder", "routeImageUrlOrder", "afterImageUrlOrder", "beforeImageShowing", "routeImageShowing", "afterImageShowing")
+    insert into "public"."posts" ("runId", "caption", "beforeImageUrlOrder", "routeImageUrlOrder", "afterImageUrlOrder", "beforeImageUrlShowing", "routeImageUrlShowing", "afterImageUrlShowing")
     values ($1, $2, $3, $4, $5, $6, $7, $8)
     returning *;
   `;
@@ -106,6 +106,7 @@ app.get('/api/posts', (req, res, next) => {
     select *
     from "posts"
     join "runs" using ("runId")
+    join "accounts" using ("accountId")
     order by "postedAt";
   `;
 

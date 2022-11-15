@@ -28,9 +28,9 @@ CREATE TABLE "public"."posts" (
   "beforeImageUrlOrder" int NOT NULL,
   "routeImageUrlOrder" int NOT NULL,
   "afterImageUrlOrder" int NOT NULL,
-  "beforeImageShowing" boolean NOT NULL,
-  "routeImageShowing" boolean NOT NULL,
-  "afterImageShowing" boolean NOT NULL,
+  "beforeImageUrlShowing" boolean NOT NULL,
+  "routeImageUrlShowing" boolean NOT NULL,
+  "afterImageUrlShowing" boolean NOT NULL,
 	CONSTRAINT "posts_pk" PRIMARY KEY ("postId")
 ) WITH (
   OIDS=FALSE

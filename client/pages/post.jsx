@@ -118,7 +118,7 @@ export default class Post extends React.Component {
 
   render() {
     if (!this.state.runData) return;
-    if (this.state.postCreated) return <Redirect to="#home" />;
+    if (this.state.postCreated) return <Redirect to="home" />;
 
     const times = <Button href="#saved" className="times text-dark">
       <FontAwesomeIcon icon={faTimes} size="xl" />
