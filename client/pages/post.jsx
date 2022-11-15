@@ -49,6 +49,7 @@ export default class Post extends React.Component {
 
     const carouselItems = imgArray.map((obj, index) => {
       const icon = (obj.showing) ? minus : plus;
+      const modalClass = (obj.showing) ? 'carousel-modal position-absolute hidden' : 'carousel-modal position-absolute';
       return (
         <Carousel.Item key={index} order={obj.order} showing={obj.showing.toString()} id={obj.id} className="text-light position-relative">
           <img src={obj.img} />
@@ -66,6 +67,7 @@ export default class Post extends React.Component {
               {icon}
             </button>
           </div>
+          <div className={modalClass} />
         </Carousel.Item>
       );
     });
