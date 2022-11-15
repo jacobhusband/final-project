@@ -79,22 +79,23 @@ app.post('/api/runs', (req, res, next) => {
 
 app.post('/api/posts', (req, res, next) => {
 
-  const { caption, runId } = req.body;
+  const { caption, runId, beforeImageUrlOrder, routeImageUrlOrder, afterImageUrlOrder, beforeImageUrlShowing, routeImageUrlShowing, afterImageUrlShowing } = req.body;
 
-  if (caption === undefined || runId === undefined) {
-    throw new ClientError(400, 'Missing one of the images, distance, time, or coordinates');
+  if (caption === undefined || runId === undefined || beforeImageUrlOrder === undefined || routeImageUrlOrder === undefined || afterImageUrlOrder === undefined || beforeImageUrlShowing === undefined || routeImageUrlShowing === undefined || afterImageUrlShowing === undefined) {
+    throw new ClientError(400, 'Missing caption, runId, image order, or image showing.');
   }
 
   const sql = `
-    insert into "public"."posts" ("runId", "caption")
-    values ($1, $2);
+    insert into "public"."posts" ("runId", "caption", "beforeImageUrlOrder", "routeImageUrlOrder", "afterImageUrlOrder", "beforeImageShowing", "routeImageShowing", "afterImageShowing")
+    values ($1, $2, $3, $4, $5, $6, $7, $8)
+    returning *;
   `;
 
-  const params = [runId, caption];
+  const params = [runId, caption, beforeImageUrlOrder, routeImageUrlOrder, afterImageUrlOrder, beforeImageUrlShowing, routeImageUrlShowing, afterImageUrlShowing];
 
   db.query(sql, params)
     .then(result => {
-      res.status(201).json({ message: 'Success' });
+      res.status(201).json(result.rows[0]);
     })
     .catch(err => next(err));
 });

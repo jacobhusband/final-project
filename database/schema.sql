@@ -25,6 +25,12 @@ CREATE TABLE "public"."posts" (
 	"runId" int NOT NULL,
 	"postedAt" timestamp with time zone default CURRENT_TIMESTAMP,
 	"caption" TEXT NOT NULL,
+  "beforeImageUrlOrder" int NOT NULL,
+  "routeImageUrlOrder" int NOT NULL,
+  "afterImageUrlOrder" int NOT NULL,
+  "beforeImageShowing" boolean NOT NULL,
+  "routeImageShowing" boolean NOT NULL,
+  "afterImageShowing" boolean NOT NULL,
 	CONSTRAINT "posts_pk" PRIMARY KEY ("postId")
 ) WITH (
   OIDS=FALSE

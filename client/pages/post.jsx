@@ -3,15 +3,40 @@ import { Carousel, Container, Row, Col, Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faChevronLeft, faChevronRight, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import formatDistance from 'date-fns/formatDistance';
+import Redirect from '../components/redirect';
 
 export default class Post extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      runData: null
+      runData: null,
+      postCreated: false
     };
     this.updateImgShowing = this.updateImgShowing.bind(this);
     this.swapImageSrc = this.swapImageSrc.bind(this);
+    this.createPost = this.createPost.bind(this);
+  }
+
+  createPost(event) {
+    event.preventDefault();
+    const caption = event.target.elements.formBasicCaption.value;
+    const runId = this.props.runId;
+    const newPostInfo = Object.assign({}, this.props.postInfo);
+    newPostInfo.caption = caption;
+    newPostInfo.runId = runId;
+    const details = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newPostInfo)
+    };
+    fetch('api/posts', details).then(res => res.json()).then(postCreated => {
+      this.setState({
+        postCreated
+      });
+    }).catch(err => console.error(err));
   }
 
   swapImageSrc(event) {
@@ -93,6 +118,7 @@ export default class Post extends React.Component {
 
   render() {
     if (!this.state.runData) return;
+    if (this.state.postCreated) return <Redirect to="#home" />;
 
     const times = <Button href="#saved" className="times text-dark">
       <FontAwesomeIcon icon={faTimes} size="xl" />
@@ -178,23 +204,23 @@ export default class Post extends React.Component {
               <p className='mb-0'>{distance} miles {time} time {pace} pace</p>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form>
+          <Form onSubmit={this.createPost}>
+            <Row>
+              <Col>
                 <Form.Group className="mb-1 mt-1 text-start" controlId="formBasicCaption">
-                  <Form.Control as="textarea" placeholder="enter a description" rows={5} />
+                  <Form.Control as="textarea" placeholder="enter a description" required rows={5} />
                 </Form.Group>
-              </Form>
-            </Col>
-          </Row>
-          <Row className='desktop-row medium mt-0'>
-            <Col xs={3} className="text-start mt-1">
-              <Button>Post</Button>
-            </Col>
-            <Col xs={9}>
-              <p className='mb-1 secondary text-secondary small desktop-hidden text-end'>saved {result}</p>
-            </Col>
-          </Row>
+              </Col>
+            </Row>
+            <Row className='desktop-row medium mt-0'>
+              <Col xs={3} className="text-start mt-1">
+                <Button type="submit">Post</Button>
+              </Col>
+              <Col xs={9}>
+                <p className='mb-1 secondary text-secondary small desktop-hidden text-end'>saved {result}</p>
+              </Col>
+            </Row>
+          </Form>
         </Container>
       </div>
     );
