@@ -10,6 +10,69 @@ export default class Post extends React.Component {
       runData: null
     };
     this.updateImgShowing = this.updateImgShowing.bind(this);
+    this.swapImageSrc = this.swapImageSrc.bind(this);
+  }
+
+  swapImageSrc(event) {
+    let element;
+
+    if (event.target.tagName === 'path') {
+      element = event.target.parentElement.parentElement;
+    } else if (event.target.tagName === 'svg') {
+      element = event.target.parentElement;
+    } else {
+      element = event.target;
+    }
+
+    const direction = (element.classList.contains('left')) ? 'left' : 'right';
+
+    const id = element.closest('.carousel-item').id;
+
+    const newPropsPostInfo = Object.assign({}, this.props.postInfo);
+    let swapId;
+    let tempId;
+
+    if (direction === 'left') {
+      if (newPropsPostInfo[`${id}Order`] === 1) {
+        for (const key in newPropsPostInfo) {
+          if (newPropsPostInfo[key] === 3) {
+            swapId = key;
+          }
+        }
+        newPropsPostInfo[`${id}Order`] = 3;
+        newPropsPostInfo[swapId] = 1;
+      } else {
+        tempId = newPropsPostInfo[`${id}Order`];
+        for (const key in newPropsPostInfo) {
+          if (newPropsPostInfo[key] === tempId - 1) {
+            swapId = key;
+          }
+        }
+        newPropsPostInfo[`${id}Order`]--;
+        newPropsPostInfo[swapId]++;
+      }
+    } else {
+      if (newPropsPostInfo[`${id}Order`] === 3) {
+        for (const key in newPropsPostInfo) {
+          if (newPropsPostInfo[key] === 1) {
+            swapId = key;
+          }
+        }
+        newPropsPostInfo[`${id}Order`] = 1;
+        newPropsPostInfo[swapId] = 3;
+      } else {
+        tempId = newPropsPostInfo[`${id}Order`];
+        for (const key in newPropsPostInfo) {
+          if (newPropsPostInfo[key] === tempId + 1) {
+            swapId = key;
+          }
+        }
+        newPropsPostInfo[`${id}Order`]++;
+        newPropsPostInfo[swapId]--;
+      }
+    }
+
+    this.props.updatePostInfo(newPropsPostInfo);
   }
 
   updateImgShowing(event) {
@@ -54,11 +117,11 @@ export default class Post extends React.Component {
         <Carousel.Item key={index} order={obj.order} showing={obj.showing.toString()} id={obj.id} className="text-light position-relative">
           <img src={obj.img} />
           <div className="swap-container d-flex align-items-center position-absolute">
-            <button className='left text-light bg-dark'>
+            <button onClick={this.swapImageSrc} className='left text-light bg-dark'>
               {leftChevron}
             </button>
             <p className='swap align-self-center mb-0 bg-dark'>SWAP</p>
-            <button className='right text-light bg-dark'>
+            <button onClick={this.swapImageSrc} className='right text-light bg-dark'>
               {rightChevron}
             </button>
           </div>
