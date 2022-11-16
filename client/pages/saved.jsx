@@ -78,13 +78,13 @@ function CreateSavedRunLi(props) {
     <Container id={props.savedRun.runId}>
       <Row className='desktop-row small mt-1'>
         <Col xs={0} md={5}>
-          <p className='mb-1 secondary text-secondary desktop-text-left hidden'>{result}</p>
+          <p className='mb-0 secondary text-secondary desktop-text-left hidden'>{result}</p>
         </Col>
         <Col xs={12} md={7} className="text-secondary desktop-text-right">
           <p className='mb-0'>{distance} miles {time} time {pace} pace</p>
         </Col>
       </Row>
-      <Row className='desktop-row small mt-1'>
+      <Row className='desktop-row small'>
         <Col>
           <p className='mb-1 secondary text-secondary desktop-hidden'>{result}</p>
         </Col>

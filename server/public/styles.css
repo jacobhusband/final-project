@@ -127,6 +127,10 @@ img {
   margin-bottom: 0;
 }
 
+.home-page .container.outer {
+  padding: 0;
+}
+
 .run-info {
   font-size: 0.85rem;
 }
@@ -186,7 +190,16 @@ img {
     text-align: right !important;
   }
 
-  .desktop-hidden {
+  .home-page .container.outer,
+  .navbar .container {
+    max-width: 600px !important;
+  }
+
+  .home-page .desktop-mileage {
+    font-size: 1rem;
+  }
+
+  .home-page .desktop-hidden {
     display: none;
   }
 

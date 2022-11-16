@@ -10,7 +10,7 @@ export default class RunInfo extends React.Component {
       <Container className='run-info text-center'>
         <Row className='desktop-row mt-2'>
           <Col className="text-secondary desktop-text-right">
-            <p className='mb-0'>{distance} miles {time} time {pace} pace</p>
+            <p className='desktop-mileage mb-0'>{distance} miles {time} time {pace} pace</p>
           </Col>
         </Row>
       </Container>

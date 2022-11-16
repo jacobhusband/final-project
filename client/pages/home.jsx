@@ -63,9 +63,9 @@ export default class Home extends React.Component {
       const result = formatDistanceStrict(then, now, { includeSeconds: true, addSuffix: true });
 
       return (
-        <div key={postData.postId}>
+        <Container className="outer" key={postData.postId}>
           <div>
-            <p className='m-2 mb-1'>{postData.username}</p>
+            <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
           </div>
           <Carousel interval={null}>
             {carouselItems}
@@ -80,7 +80,7 @@ export default class Home extends React.Component {
               <p className='small mb-0'>{result}</p>
             </div>
           </Container>
-        </div>
+        </Container>
       );
     });
 
