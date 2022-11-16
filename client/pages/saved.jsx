@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import Stack from 'react-bootstrap/Stack';
-import { Container, Row, Col, Image, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Image, Dropdown, Button } from 'react-bootstrap';
 import formatDistance from 'date-fns/formatDistance';
 
 export default class Saved extends React.Component {
@@ -27,7 +27,7 @@ export default class Saved extends React.Component {
 
     const ellipsisV = <FontAwesomeIcon icon={faEllipsisV} size="xl" />;
     const listItems = this.state.receivedSavedRuns.map(savedRun => {
-      return CreateSavedRunLi(savedRun);
+      return <CreateSavedRunLi key={savedRun.runId} savedRun={savedRun} saveRunId={this.props.saveRunId} />;
     });
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -66,8 +66,8 @@ export default class Saved extends React.Component {
   }
 }
 
-function CreateSavedRunLi(savedRun) {
-  const { ranAt, distance, time, pace } = savedRun;
+function CreateSavedRunLi(props) {
+  const { ranAt, distance, time, pace } = props.savedRun;
 
   const now = new Date();
   const then = new Date(ranAt);
@@ -75,33 +75,36 @@ function CreateSavedRunLi(savedRun) {
   const result = formatDistance(then, now, { includeSeconds: true, addSuffix: true });
 
   return (
-    <Container key={savedRun.runId}>
+    <Container id={props.savedRun.runId}>
       <Row className='desktop-row small mt-1'>
         <Col xs={0} md={5}>
-          <p className='mb-1 secondary text-secondary desktop-text-left hidden'>{result}</p>
+          <p className='mb-0 secondary text-secondary desktop-text-left hidden'>{result}</p>
         </Col>
         <Col xs={12} md={7} className="text-secondary desktop-text-right">
-          <p className='mb-1'>{distance} miles {time} time {pace} pace</p>
+          <p className='mb-0'>{distance} miles {time} time {pace} pace</p>
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <Image src={savedRun.beforeImageUrl} fluid="true" rounded="true" />
-        </Col>
-        <Col>
-          <Image src={savedRun.routeImageUrl} fluid="true" rounded="true" />
-        </Col>
-        <Col className="hidden">
-          <Image src={savedRun.afterImageUrl} fluid="true" rounded="true" />
-        </Col>
-      </Row>
-      <Row className='desktop-row small mt-1'>
+      <Row className='desktop-row small'>
         <Col>
           <p className='mb-1 secondary text-secondary desktop-hidden'>{result}</p>
         </Col>
       </Row>
       <Row>
-        <Col className="text-center" />
+        <Col>
+          <Image src={props.savedRun.beforeImageUrl} fluid="true" rounded="true" />
+        </Col>
+        <Col>
+          <Image src={props.savedRun.routeImageUrl} fluid="true" rounded="true" />
+        </Col>
+        <Col className="hidden">
+          <Image src={props.savedRun.afterImageUrl} fluid="true" rounded="true" />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col className="text-center">
+          <Button variant='link' onClick={() => { props.saveRunId(props.savedRun.runId); }} href="#post">Post</Button>
+        </Col>
       </Row>
     </Container>
   );

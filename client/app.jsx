@@ -7,6 +7,7 @@ import Photo from './pages/photo';
 import Warning from './pages/warning';
 import Stats from './pages/stats';
 import Saved from './pages/saved';
+import Post from './pages/post';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -14,11 +15,13 @@ export default class App extends React.Component {
     this.state = {
       route: parseRoute(window.location.hash),
       preImageUrl: null,
-      postImageUrl: null
+      postImageUrl: null,
+      runId: null
     };
     this.savePreImage = this.savePreImage.bind(this);
     this.savePostImage = this.savePostImage.bind(this);
     this.resetSavedImages = this.resetSavedImages.bind(this);
+    this.saveRunId = this.saveRunId.bind(this);
   }
 
   savePreImage(preImageUrl) {
@@ -30,6 +33,12 @@ export default class App extends React.Component {
   savePostImage(postImageUrl) {
     this.setState({
       postImageUrl
+    });
+  }
+
+  saveRunId(runId) {
+    this.setState({
+      runId
     });
   }
 
@@ -77,11 +86,13 @@ export default class App extends React.Component {
     } else if (route.path === 'timer') {
       return <Run phase="timer" />;
     } else if (route.path === 'stats') {
-      return <Stats preImageUrl={this.state.preImageUrl} postImageUrl={this.state.postImageUrl} />;
+      return <Stats saveRunId={this.saveRunId} preImageUrl={this.state.preImageUrl} postImageUrl={this.state.postImageUrl} />;
     } else if (route.path === 'postPhoto') {
       return <Photo to="post" savePostImage={this.savePostImage} postImageUrl={this.state.postImageUrl} />;
     } else if (route.path === 'saved') {
-      return <Saved resetSavedImages={this.resetSavedImages} />;
+      return <Saved saveRunId={this.saveRunId} resetSavedImages={this.resetSavedImages} />;
+    } else if (route.path === 'post') {
+      return <Post runId={this.state.runId} />;
     }
   }
 

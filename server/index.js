@@ -40,6 +40,21 @@ app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
   }
 });
 
+app.get('/api/run/:runId', (req, res, next) => {
+  const sql = `
+  select *
+  from "runs"
+  where "accountId" = $1 AND
+        "runId" = $2;
+  `;
+  const params = ['1', req.params.runId];
+  db.query(sql, params)
+    .then(result => {
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
 app.post('/api/runs', (req, res, next) => {
   const { preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace } = req.body;
 
@@ -48,16 +63,59 @@ app.post('/api/runs', (req, res, next) => {
   }
 
   const sql = `
-  insert into "public"."runs" ("accountId", "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords", "pace")
-  values (1, $1, $2, $3, $4, $5, $6, $7);
+    insert into "public"."runs" ("accountId", "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords", "pace")
+    values (1, $1, $2, $3, $4, $5, $6, $7)
+    returning *;
   `;
+
   const params = [preImageUrl, postImageUrl, mapImg, distance, time, JSON.stringify(latlng), pace];
 
   db.query(sql, params)
     .then(result => {
-      res.status(201).json({ message: 'Success' });
+      res.status(201).json(result.rows[0]);
     })
     .catch(err => next(err));
+});
+
+app.post('/api/posts', (req, res, next) => {
+
+  const { caption, runId, images } = req.body;
+
+  if (caption === undefined || runId === undefined || images === undefined) {
+    throw new ClientError(400, 'Missing caption, runId, image order, or image showing.');
+  }
+
+  const sql = `
+    insert into "public"."posts" ("runId", "caption", "images")
+    values ($1, $2, $3)
+    returning *;
+  `;
+
+  const params = [runId, caption, JSON.stringify(images)];
+
+  db.query(sql, params)
+    .then(result => {
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/posts', (req, res, next) => {
+
+  const sql = `
+    select *
+    from "posts"
+    join "runs" using ("runId")
+    join "accounts" using ("accountId")
+    order by "postedAt";
+  `;
+
+  db.query(sql)
+    .then(result => {
+      res.status(201).json(result.rows);
+    })
+    .catch(err => next(err));
+
 });
 
 app.use(errorMiddleware);

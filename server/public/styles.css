@@ -1,7 +1,10 @@
 h1,
+h2,
+h3,
 p,
 a,
 h4,
+textarea,
 .btn {
   font-family: "Josefin Sans", sans-serif;
 }
@@ -37,6 +40,12 @@ img {
   object-fit: cover;
 }
 
+.carousel-item img,
+.single-image-post img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
 .navbar .nav-link,
 .navbar .nav-link:hover,
 .navbar .nav-link:focus {
@@ -64,6 +73,71 @@ img {
 
 .stats .image {
   width: 45%;
+}
+
+.new-post button {
+  border: none;
+}
+
+.new-post .swap {
+  padding-top: 4px;
+  padding-bottom: 2px;
+}
+
+.new-post button.left {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.new-post button.right {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.new-post .swap-container {
+  top: 6px;
+  right: 6px;
+  opacity: 0.7;
+  z-index: 5;
+}
+
+.new-post .choose-container {
+  top: 7px;
+  left: 7px;
+  opacity: 0.7;
+  z-index: 5;
+}
+
+.new-post .times-icon {
+  top: 2px;
+}
+
+.new-post .choose-container button {
+  border-radius: 50%;
+}
+
+.new-post .carousel-modal {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.5;
+}
+
+.new-post .times {
+  background-color: white;
+  border: none;
+  padding: 0.15rem;
+  margin-bottom: 0;
+}
+
+.home-page .container.outer {
+  padding: 0;
+}
+
+.run-info {
+  font-size: 0.85rem;
 }
 
 .desktop-image {
@@ -110,7 +184,7 @@ img {
 
   .saved-runs .desktop-row {
     font-size: large;
-    margin: 0.5rem 0 !important;
+    margin-top: 0.5rem !important;
   }
 
   .saved-runs .desktop-text-right {
@@ -121,7 +195,22 @@ img {
     text-align: right !important;
   }
 
-  .desktop-hidden {
+  .home-page .container.outer,
+  .new-post .container.outer,
+  .home-page .navbar .container {
+    max-width: 600px !important;
+  }
+
+  .new-post .times-icon {
+    left: 12px;
+  }
+
+  .home-page .desktop-mileage {
+    font-size: 1rem;
+  }
+
+  .home-page .desktop-hidden,
+  .new-post .desktop-hidden {
     display: none;
   }
 
