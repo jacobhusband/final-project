@@ -16,11 +16,18 @@ export default class Splash extends React.Component {
     this.registerUser = this.registerUser.bind(this);
     this.loginUser = this.loginUser.bind(this);
     this.switchToRegister = this.switchToRegister.bind(this);
+    this.switchToLogin = this.switchToLogin.bind(this);
   }
 
   switchToRegister() {
     this.setState({
       signUp: true
+    });
+  }
+
+  switchToLogin() {
+    this.setState({
+      signUp: false
     });
   }
 
@@ -82,6 +89,7 @@ export default class Splash extends React.Component {
             onLogin={this.loginUser}
             version={this.state.signUp}
             onSignUp={this.switchToRegister}
+            onSignIn={this.switchToLogin}
           />
         </>
       );
@@ -121,11 +129,17 @@ function UserModal(props) {
         Login
       </Button>
       );
-  const goRegister = (!props.version) && (
-    <Form.Text className="text-muted">
-      Don&apos;t have an account? <Button onClick={props.onSignUp} variant='link'>Register</Button>
-    </Form.Text>
-  );
+  const goRegister = (!props.version)
+    ? (
+      <Form.Text className="text-muted">
+        Don&apos;t have an account? <Button onClick={props.onSignUp} variant='link'>Register</Button>
+      </Form.Text>
+      )
+    : (
+      <Form.Text className="text-muted">
+        Have an account? <Button onClick={props.onSignIn} variant='link'>Login</Button>
+      </Form.Text>
+      );
 
   const form = (
     <Form>
