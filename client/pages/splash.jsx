@@ -9,10 +9,22 @@ export default class Splash extends React.Component {
     this.state = {
       phase: 'nonUser',
       modal: false,
+      signUp: false,
       user: null
     };
     this.switchModal = this.switchModal.bind(this);
     this.registerUser = this.registerUser.bind(this);
+    this.loginUser = this.loginUser.bind(this);
+    this.switchToRegister = this.switchToRegister.bind(this);
+  }
+
+  switchToRegister() {
+    this.setState({
+      signUp: true
+    });
+  }
+
+  loginUser(event) {
   }
 
   registerUser(event) {
@@ -35,14 +47,16 @@ export default class Splash extends React.Component {
     }).catch(err => console.error(err));
   }
 
-  switchModal() {
+  switchModal(signUp) {
     if (this.state.modal) {
       this.setState({
-        modal: false
+        modal: false,
+        signUp
       });
     } else {
       this.setState({
-        modal: true
+        modal: true,
+        signUp
       });
     }
   }
@@ -54,7 +68,10 @@ export default class Splash extends React.Component {
     if (this.state.phase === 'nonUser') {
       content = (
         <>
-          <Button variant="primary" onClick={this.switchModal}>
+          <Button className='font-monospace' variant="primary" onClick={() => this.switchModal(false)}>
+            Sign In
+          </Button>
+          <Button className='font-monospace' variant="primary" onClick={() => this.switchModal(true)}>
             Sign Up
           </Button>
 
@@ -62,6 +79,9 @@ export default class Splash extends React.Component {
             show={this.state.modal}
             onHide={this.switchModal}
             onSubmit={this.registerUser}
+            onLogin={this.loginUser}
+            version={this.state.signUp}
+            onSignUp={this.switchToRegister}
           />
         </>
       );
@@ -89,11 +109,29 @@ export default class Splash extends React.Component {
 
 function UserModal(props) {
 
+  const title = (props.version) ? 'Sign Up' : 'Sign In';
+  const submit = (props.version)
+    ? (
+      <Button onSubmit={props.onSubmit} variant="primary" type="submit">
+        Register
+      </Button>
+      )
+    : (
+      <Button onSubmit={props.onLogin} variant="primary" type="submit">
+        Login
+      </Button>
+      );
+  const goRegister = (!props.version) && (
+    <Form.Text className="text-muted">
+      Don&apos;t have an account? <Button onClick={props.onSignUp} variant='link'>Register</Button>
+    </Form.Text>
+  );
+
   const form = (
     <Form>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Sign Up
+          {title}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -106,12 +144,10 @@ function UserModal(props) {
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Enter password" autoComplete="new-password" />
         </Form.Group>
-
+        {goRegister}
       </Modal.Body>
       <Modal.Footer>
-        <Button onSubmit={props.onSubmit} variant="primary" type="submit">
-          Register
-        </Button>
+        {submit}
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Form>
