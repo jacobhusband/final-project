@@ -10,8 +10,6 @@ CREATE TABLE "public"."accounts" (
 	"accountId" serial NOT NULL,
 	"username" TEXT NOT NULL UNIQUE,
 	"hashedPassword" TEXT NOT NULL,
-	"email" TEXT NOT NULL UNIQUE,
-	"isEmailVerified" BOOLEAN NOT NULL,
 	"joinedAt" timestamp with time zone default CURRENT_TIMESTAMP,
 	CONSTRAINT "accounts_pk" PRIMARY KEY ("accountId")
 ) WITH (
