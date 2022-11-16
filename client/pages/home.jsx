@@ -8,58 +8,36 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      postData: null
+      posts: null
     };
   }
 
   componentDidMount() {
-    fetch('/api/posts').then(result => result.json()).then(postData => {
+    fetch('/api/posts').then(result => result.json()).then(posts => {
       this.setState({
-        postData
+        posts
       });
     }).catch(err => console.error(err));
   }
 
   render() {
-    if (!this.state.postData) return;
+    if (!this.state.posts) return;
 
-    const posts = this.state.postData.map(postData => {
-
-      const { beforeImageUrl, routeImageUrl, afterImageUrl, beforeImageUrlOrder, beforeImageUrlShowing, routeImageUrlOrder, routeImageUrlShowing, afterImageUrlOrder, afterImageUrlShowing, ranAt } = postData;
-
-      const beforeObj = { img: beforeImageUrl, order: beforeImageUrlOrder, showing: beforeImageUrlShowing, id: 'beforeImageUrl' };
-
-      const routeObj = { img: routeImageUrl, order: routeImageUrlOrder, showing: routeImageUrlShowing, id: 'routeImageUrl' };
-
-      const afterObj = { img: afterImageUrl, order: afterImageUrlOrder, showing: afterImageUrlShowing, id: 'afterImageUrl' };
-
-      const imgArray = [beforeObj, routeObj, afterObj];
-
-      const sortedImgArray = [];
-
-      for (let j = 0; j < 3; j++) {
-        for (let i = 0; i < 3; i++) {
-          if (imgArray[i].order === j + 1) {
-            sortedImgArray.push(imgArray[i]);
-            break;
-          }
-        }
-      }
-
-      let imgSrc;
-      let carouselItems = sortedImgArray.map((obj, index) => {
-        if (obj.showing) {
-          imgSrc = obj.img;
+    let imgSrc, postData;
+    const posts = this.state.posts.map((post, index) => {
+      postData = post;
+      let carouselItems = post.images.map(image => {
+        if (image.on) {
+          imgSrc = image.url;
           return (
-            <Carousel.Item key={index} order={obj.order} showing={obj.showing.toString()} id={obj.id} className="text-light position-relative">
-              <img src={imgSrc} />
+            <Carousel.Item key={image.url} id={image.url} className="text-light position-relative">
+              <img src={image.url} />
             </Carousel.Item>
           );
         } else {
           return null;
         }
       });
-
       carouselItems = carouselItems.filter(x => x !== null);
 
       const carousel = (carouselItems.length !== 1)
@@ -67,7 +45,7 @@ export default class Home extends React.Component {
         : <div className='single-image-post'><img src={imgSrc} /></div>;
 
       const now = new Date();
-      const then = new Date(ranAt);
+      const then = new Date(postData.postedAt);
       const result = formatDistanceStrict(then, now, { includeSeconds: true, addSuffix: true });
 
       return (

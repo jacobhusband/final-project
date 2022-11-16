@@ -79,19 +79,19 @@ app.post('/api/runs', (req, res, next) => {
 
 app.post('/api/posts', (req, res, next) => {
 
-  const { caption, runId, beforeImageUrlOrder, routeImageUrlOrder, afterImageUrlOrder, beforeImageUrlShowing, routeImageUrlShowing, afterImageUrlShowing } = req.body;
+  const { caption, runId, images } = req.body;
 
-  if (caption === undefined || runId === undefined || beforeImageUrlOrder === undefined || routeImageUrlOrder === undefined || afterImageUrlOrder === undefined || beforeImageUrlShowing === undefined || routeImageUrlShowing === undefined || afterImageUrlShowing === undefined) {
+  if (caption === undefined || runId === undefined || images === undefined) {
     throw new ClientError(400, 'Missing caption, runId, image order, or image showing.');
   }
 
   const sql = `
-    insert into "public"."posts" ("runId", "caption", "beforeImageUrlOrder", "routeImageUrlOrder", "afterImageUrlOrder", "beforeImageUrlShowing", "routeImageUrlShowing", "afterImageUrlShowing")
-    values ($1, $2, $3, $4, $5, $6, $7, $8)
+    insert into "public"."posts" ("runId", "caption", "images")
+    values ($1, $2, $3)
     returning *;
   `;
 
-  const params = [runId, caption, beforeImageUrlOrder, routeImageUrlOrder, afterImageUrlOrder, beforeImageUrlShowing, routeImageUrlShowing, afterImageUrlShowing];
+  const params = [runId, caption, JSON.stringify(images)];
 
   db.query(sql, params)
     .then(result => {

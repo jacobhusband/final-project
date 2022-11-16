@@ -10,7 +10,8 @@ export default class Post extends React.Component {
     super(props);
     this.state = {
       runData: null,
-      postCreated: false
+      postCreated: false,
+      images: []
     };
     this.updateImgShowing = this.updateImgShowing.bind(this);
     this.swapImageSrc = this.swapImageSrc.bind(this);
@@ -21,9 +22,7 @@ export default class Post extends React.Component {
     event.preventDefault();
     const caption = event.target.elements.formBasicCaption.value;
     const runId = this.props.runId;
-    const newPostInfo = Object.assign({}, this.props.postInfo);
-    newPostInfo.caption = caption;
-    newPostInfo.runId = runId;
+    const newPostInfo = { caption, runId, images: this.state.images };
     const details = {
       method: 'POST',
       headers: {
@@ -50,107 +49,82 @@ export default class Post extends React.Component {
       element = event.target;
     }
 
-    const direction = (element.classList.contains('left')) ? 'left' : 'right';
-
-    const id = element.closest('.carousel-item').id;
-
-    const newPropsPostInfo = Object.assign({}, this.props.postInfo);
-    let swapId;
-    let tempId;
+    const direction = element.dataset.direction;
+    const index = Number(element.dataset.currentOrder);
+    const images = this.state.images;
+    const placeholder = images[index];
 
     if (direction === 'left') {
-      if (newPropsPostInfo[`${id}Order`] === 1) {
-        for (const key in newPropsPostInfo) {
-          if (newPropsPostInfo[key] === 3) {
-            swapId = key;
-          }
-        }
-        newPropsPostInfo[`${id}Order`] = 3;
-        newPropsPostInfo[swapId] = 1;
+      if (index === 0) {
+        images[0] = images[2];
+        images[2] = placeholder;
       } else {
-        tempId = newPropsPostInfo[`${id}Order`];
-        for (const key in newPropsPostInfo) {
-          if (newPropsPostInfo[key] === tempId - 1) {
-            swapId = key;
-          }
-        }
-        newPropsPostInfo[`${id}Order`]--;
-        newPropsPostInfo[swapId]++;
+        images[index] = images[index - 1];
+        images[index - 1] = placeholder;
       }
     } else {
-      if (newPropsPostInfo[`${id}Order`] === 3) {
-        for (const key in newPropsPostInfo) {
-          if (newPropsPostInfo[key] === 1) {
-            swapId = key;
-          }
-        }
-        newPropsPostInfo[`${id}Order`] = 1;
-        newPropsPostInfo[swapId] = 3;
+      if (index === 2) {
+        images[2] = images[0];
+        images[0] = placeholder;
       } else {
-        tempId = newPropsPostInfo[`${id}Order`];
-        for (const key in newPropsPostInfo) {
-          if (newPropsPostInfo[key] === tempId + 1) {
-            swapId = key;
-          }
-        }
-        newPropsPostInfo[`${id}Order`]++;
-        newPropsPostInfo[swapId]--;
+        images[index] = images[index + 1];
+        images[index + 1] = placeholder;
       }
     }
 
-    this.props.updatePostInfo(newPropsPostInfo);
+    this.setState({
+      images
+    });
   }
 
   updateImgShowing(event) {
-    const newPropsPostInfo = Object.assign({}, this.props.postInfo);
-    const imgName = event.target.closest('.carousel-item').id;
-    newPropsPostInfo[`${imgName}Showing`] = !(newPropsPostInfo[`${imgName}Showing`]);
-    this.props.updatePostInfo(newPropsPostInfo);
+    const imgUrl = event.target.closest('.carousel-item').id;
+    const images = [...this.state.images];
+    const newImages = images.map(obj => {
+      if (obj.url !== imgUrl) return obj;
+      obj.on = !obj.on;
+      return obj;
+    });
+    this.setState({
+      images: newImages
+    });
   }
 
   componentDidMount() {
     fetch(`/api/run/${this.props.runId}`).then(result => result.json()).then(runData => {
+      const { beforeImageUrl, routeImageUrl, afterImageUrl } = runData;
+      const images = ([
+        { url: beforeImageUrl, on: true },
+        { url: routeImageUrl, on: true },
+        { url: afterImageUrl, on: true }
+      ]);
       this.setState({
-        runData
+        runData,
+        images
       });
     }).catch(err => console.error(err));
   }
 
   render() {
     if (!this.state.runData) return;
+    if (!this.state.images.length) return;
     if (this.state.postCreated) return <Redirect to="home" />;
 
-    const times = <Button href="#saved" className="times text-dark">
-      <div className='times-icon position-relative'>
-        <FontAwesomeIcon icon={faTimes} size="xl" />
-      </div>
-    </Button>;
+    const times = (
+      <Button href="#saved" className="times text-dark">
+        <div className='times-icon position-relative'>
+          <FontAwesomeIcon icon={faTimes} size="xl" />
+        </div>
+      </Button>
+    );
+
     const leftChevron = <FontAwesomeIcon icon={faChevronLeft} className='p-1' />;
     const rightChevron = <FontAwesomeIcon icon={faChevronRight} className='p-1' />;
+
     const plus = <FontAwesomeIcon icon={faPlus} />;
     const minus = <FontAwesomeIcon icon={faMinus} />;
 
-    const { beforeImageUrl, routeImageUrl, afterImageUrl } = this.state.runData;
-    const { beforeImageUrlOrder, beforeImageUrlShowing, routeImageUrlOrder, routeImageUrlShowing, afterImageUrlOrder, afterImageUrlShowing } = this.props.postInfo;
-
-    const beforeObj = { img: beforeImageUrl, order: beforeImageUrlOrder, showing: beforeImageUrlShowing, id: 'beforeImageUrl' };
-
-    const routeObj = { img: routeImageUrl, order: routeImageUrlOrder, showing: routeImageUrlShowing, id: 'routeImageUrl' };
-
-    const afterObj = { img: afterImageUrl, order: afterImageUrlOrder, showing: afterImageUrlShowing, id: 'afterImageUrl' };
-
-    const imgArray = [beforeObj, routeObj, afterObj];
-    const sortedImgArray = [];
-
-    for (let j = 0; j < 3; j++) {
-      for (let i = 0; i < 3; i++) {
-        if (imgArray[i].order === j + 1) {
-          sortedImgArray.push(imgArray[i]);
-          break;
-        }
-      }
-    }
-
+    const images = this.state.images;
     const { ranAt, distance, time, pace } = this.state.runData;
 
     const now = new Date();
@@ -158,18 +132,26 @@ export default class Post extends React.Component {
 
     const result = formatDistance(then, now, { includeSeconds: true, addSuffix: true });
 
-    const carouselItems = sortedImgArray.map((obj, index) => {
-      const icon = (obj.showing) ? minus : plus;
-      const modalClass = (obj.showing) ? 'carousel-modal position-absolute hidden desktop-hidden' : 'carousel-modal position-absolute';
+    const carouselItems = images.map((obj, index) => {
+      const icon = (obj.on) ? minus : plus;
+      const modalClass = (obj.on) ? 'carousel-modal position-absolute hidden desktop-hidden' : 'carousel-modal position-absolute';
       return (
-        <Carousel.Item key={index} order={obj.order} showing={obj.showing.toString()} id={obj.id} className="text-light position-relative">
-          <img src={obj.img} />
+        <Carousel.Item key={obj.url} id={obj.url} className="text-light position-relative">
+          <img src={obj.url} />
           <div className="swap-container d-flex align-items-center position-absolute">
-            <button onClick={this.swapImageSrc} className='left text-light bg-dark'>
+            <button
+              onClick={this.swapImageSrc}
+              className='left text-light bg-dark'
+              data-direction='left'
+              data-current-order={index}>
               {leftChevron}
             </button>
             <p className='swap align-self-center mb-0 bg-dark'>SWAP</p>
-            <button onClick={this.swapImageSrc} className='right text-light bg-dark'>
+            <button
+              onClick={this.swapImageSrc}
+              className='right text-light bg-dark'
+              data-direction='right'
+              data-current-order={index}>
               {rightChevron}
             </button>
           </div>
