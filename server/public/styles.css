@@ -40,7 +40,8 @@ img {
   object-fit: cover;
 }
 
-.carousel-item img {
+.carousel-item img,
+.single-image-post img {
   aspect-ratio: 3 / 2;
   object-fit: cover;
 }
@@ -105,6 +106,10 @@ img {
   left: 7px;
   opacity: 0.7;
   z-index: 5;
+}
+
+.new-post .times-icon {
+  top: 2px;
 }
 
 .new-post .choose-container button {
@@ -191,15 +196,21 @@ img {
   }
 
   .home-page .container.outer,
-  .navbar .container {
+  .new-post .container.outer,
+  .home-page .navbar .container {
     max-width: 600px !important;
+  }
+
+  .new-post .times-icon {
+    left: 12px;
   }
 
   .home-page .desktop-mileage {
     font-size: 1rem;
   }
 
-  .home-page .desktop-hidden {
+  .home-page .desktop-hidden,
+  .new-post .desktop-hidden {
     display: none;
   }
 

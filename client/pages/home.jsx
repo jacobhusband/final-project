@@ -46,17 +46,25 @@ export default class Home extends React.Component {
         }
       }
 
-      const carouselItems = sortedImgArray.map((obj, index) => {
+      let imgSrc;
+      let carouselItems = sortedImgArray.map((obj, index) => {
         if (obj.showing) {
+          imgSrc = obj.img;
           return (
             <Carousel.Item key={index} order={obj.order} showing={obj.showing.toString()} id={obj.id} className="text-light position-relative">
-              <img src={obj.img} />
+              <img src={imgSrc} />
             </Carousel.Item>
           );
         } else {
           return null;
         }
       });
+
+      carouselItems = carouselItems.filter(x => x !== null);
+
+      const carousel = (carouselItems.length !== 1)
+        ? <Carousel interval={null}>{carouselItems}</Carousel>
+        : <div className='single-image-post'><img src={imgSrc} /></div>;
 
       const now = new Date();
       const then = new Date(ranAt);
@@ -67,9 +75,7 @@ export default class Home extends React.Component {
           <div>
             <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
           </div>
-          <Carousel interval={null}>
-            {carouselItems}
-          </Carousel>
+          {carousel}
           <RunInfo key={postData.postId} postData={postData} />
           <Container className='mt-1 mb-3'>
             <div className='d-flex'>
@@ -85,7 +91,7 @@ export default class Home extends React.Component {
     });
 
     return (
-      <div className="home-page">
+      <div className="home-page" >
         <Navbar />
         {posts}
       </div>

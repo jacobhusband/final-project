@@ -121,7 +121,9 @@ export default class Post extends React.Component {
     if (this.state.postCreated) return <Redirect to="home" />;
 
     const times = <Button href="#saved" className="times text-dark">
-      <FontAwesomeIcon icon={faTimes} size="xl" />
+      <div className='times-icon position-relative'>
+        <FontAwesomeIcon icon={faTimes} size="xl" />
+      </div>
     </Button>;
     const leftChevron = <FontAwesomeIcon icon={faChevronLeft} className='p-1' />;
     const rightChevron = <FontAwesomeIcon icon={faChevronRight} className='p-1' />;
@@ -158,7 +160,7 @@ export default class Post extends React.Component {
 
     const carouselItems = sortedImgArray.map((obj, index) => {
       const icon = (obj.showing) ? minus : plus;
-      const modalClass = (obj.showing) ? 'carousel-modal position-absolute hidden' : 'carousel-modal position-absolute';
+      const modalClass = (obj.showing) ? 'carousel-modal position-absolute hidden desktop-hidden' : 'carousel-modal position-absolute';
       return (
         <Carousel.Item key={index} order={obj.order} showing={obj.showing.toString()} id={obj.id} className="text-light position-relative">
           <img src={obj.img} />
@@ -183,19 +185,23 @@ export default class Post extends React.Component {
 
     return (
       <div className='new-post'>
-        <Row>
-          <Col xs={3} md={3} />
-          <Col xs={6} md={6} className="text-center mt-3 mb-2">
-            <h3 className='mb-0 mt-0'>New Post</h3>
-          </Col>
-          <Col xs={2} md={2} className="text-end p-1 mt-2 fw-bold">
-            {times}
-          </Col>
-        </Row>
-        <Carousel interval={null}>
-          {carouselItems}
-        </Carousel>
-        <Container className='text-center'>
+        <Container className="outer">
+          <Row>
+            <Col xs={3} md={3} />
+            <Col xs={6} md={6} className="text-center mt-3 mb-2">
+              <h3 className='mb-0 mt-0'>New Post</h3>
+            </Col>
+            <Col xs={2} md={2} className="text-end p-1 mt-2 fw-bold">
+              {times}
+            </Col>
+          </Row>
+        </Container>
+        <Container className="outer">
+          <Carousel interval={null}>
+            {carouselItems}
+          </Carousel>
+        </Container>
+        <Container className='text-center outer'>
           <Row className='desktop-row medium mt-2'>
             <Col xs={0} md={5}>
               <p className='mb-1 secondary text-secondary desktop-text-left hidden'>{result}</p>
