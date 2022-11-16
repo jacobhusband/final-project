@@ -88,6 +88,35 @@ export default class Splash extends React.Component {
 }
 
 function UserModal(props) {
+
+  const form = (
+    <Form>
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Sign Up
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+
+        <Form.Group className="mb-3" controlId="username">
+          <Form.Label>Username</Form.Label>
+          <Form.Control type="text" placeholder="Enter username" autoComplete="new-username" />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="Enter password" autoComplete="new-password" />
+        </Form.Group>
+
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onSubmit={props.onSubmit} variant="primary" type="submit">
+          Register
+        </Button>
+        <Button onClick={props.onHide}>Close</Button>
+      </Modal.Footer>
+    </Form>
+  );
+
   return (
     <Modal
       {...props}
@@ -95,31 +124,7 @@ function UserModal(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Form>
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Sign Up
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-
-          <Form.Group className="mb-3" controlId="username">
-            <Form.Label>Username</Form.Label>
-            <Form.Control type="text" placeholder="Enter username" autoComplete="new-username" />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" autoComplete="new-password" />
-          </Form.Group>
-
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onSubmit={props.onSubmit} variant="primary" type="submit">
-            Register
-          </Button>
-          <Button onClick={props.onHide}>Close</Button>
-        </Modal.Footer>
-      </Form>
+      {form}
     </Modal>
   );
 }
