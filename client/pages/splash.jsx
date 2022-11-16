@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
+import { Button, Modal, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faPersonRunning } from '@fortawesome/free-solid-svg-icons';
 
@@ -7,13 +7,44 @@ export default class Splash extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      phase: 'nonUser'
+      phase: 'nonUser',
+      modal: false,
+      user: null
     };
-    this.showSignUpModal = this.showSignUpModal.bind(this);
+    this.switchModal = this.switchModal.bind(this);
+    this.registerUser = this.registerUser.bind(this);
   }
 
-  showSignUpModal() {
+  registerUser(event) {
+    event.preventDefault();
+    const { username, password } = event.target.elements;
+    const info = { username: username.value, password: password.value };
+    const details = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(info)
+    };
+    fetch('/api/auth/sign-up', details).then(res => res.json()).then(user => {
+      this.setState({
+        user,
+        modal: false
+      });
+    }).catch(err => console.error(err));
+  }
 
+  switchModal() {
+    if (this.state.modal) {
+      this.setState({
+        modal: false
+      });
+    } else {
+      this.setState({
+        modal: true
+      });
+    }
   }
 
   render() {
@@ -22,16 +53,24 @@ export default class Splash extends React.Component {
     const run = <FontAwesomeIcon icon={faPersonRunning} />;
     if (this.state.phase === 'nonUser') {
       content = (
-        <div>
-          <Button onClick={this.showSignUpModal} variant="primary" type="button">Sign Up</Button>
-        </div>
+        <>
+          <Button variant="primary" onClick={this.switchModal}>
+            Sign Up
+          </Button>
+
+          <UserModal
+            show={this.state.modal}
+            onHide={this.switchModal}
+            onSubmit={this.registerUser}
+          />
+        </>
       );
     } else if (this.state.phase === 'user') {
       content = (
-        <div>
+        <>
           <Button variant="primary" href='#home' type="button">Home {home}</Button>
           <Button variant="primary" href='#run' type="button">Go Run {run}</Button>
-        </div>
+        </>
       );
     }
 
@@ -46,4 +85,41 @@ export default class Splash extends React.Component {
       </div>
     );
   }
+}
+
+function UserModal(props) {
+  return (
+    <Modal
+      {...props}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Form>
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Sign Up
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+
+          <Form.Group className="mb-3" controlId="username">
+            <Form.Label>Username</Form.Label>
+            <Form.Control type="text" placeholder="Enter username" autoComplete="new-username" />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="Password" autoComplete="new-password" />
+          </Form.Group>
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onSubmit={props.onSubmit} variant="primary" type="submit">
+            Register
+          </Button>
+          <Button onClick={props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
 }
