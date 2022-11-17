@@ -17,6 +17,7 @@ export default class Splash extends React.Component {
     this.loginUser = this.loginUser.bind(this);
     this.switchToRegister = this.switchToRegister.bind(this);
     this.switchToLogin = this.switchToLogin.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   switchToRegister() {
@@ -32,6 +33,23 @@ export default class Splash extends React.Component {
   }
 
   loginUser(event) {
+    event.preventDefault();
+    const { username, password } = event.target.elements;
+    const info = { username: username.value, password: password.value };
+    const details = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(info)
+    };
+    fetch('/api/auth/sign-in', details).then(res => res.json()).then(user => {
+      this.setState({
+        user,
+        modal: false
+      });
+    }).catch(err => console.error(err));
   }
 
   registerUser(event) {
@@ -68,6 +86,12 @@ export default class Splash extends React.Component {
     }
   }
 
+  closeModal() {
+    this.setState({
+      modal: false
+    });
+  }
+
   render() {
     let content;
     const home = <FontAwesomeIcon icon={faHome} />;
@@ -84,12 +108,12 @@ export default class Splash extends React.Component {
 
           <UserModal
             show={this.state.modal}
-            onHide={this.switchModal}
-            onSubmit={this.registerUser}
+            onHide={this.closeModal}
+            onRegister={this.registerUser}
             onLogin={this.loginUser}
             version={this.state.signUp}
-            onSignUp={this.switchToRegister}
-            onSignIn={this.switchToLogin}
+            signup={this.switchToRegister}
+            signin={this.switchToLogin}
           />
         </>
       );
@@ -120,24 +144,24 @@ function UserModal(props) {
   const title = (props.version) ? 'Sign Up' : 'Sign In';
   const submit = (props.version)
     ? (
-      <Button onSubmit={props.onSubmit} variant="primary" type="submit">
+      <Button variant="primary" type="submit">
         Register
       </Button>
       )
     : (
-      <Button onSubmit={props.onLogin} variant="primary" type="submit">
+      <Button variant="primary" type="submit">
         Login
       </Button>
       );
   const goRegister = (!props.version)
     ? (
       <Form.Text className="text-muted">
-        Don&apos;t have an account? <Button onClick={props.onSignUp} variant='link'>Register</Button>
+        Don&apos;t have an account? <Button onClick={props.signup} variant='link'>Register</Button>
       </Form.Text>
       )
     : (
       <Form.Text className="text-muted">
-        Have an account? <Button onClick={props.onSignIn} variant='link'>Login</Button>
+        Have an account? <Button onClick={props.signin} variant='link'>Login</Button>
       </Form.Text>
       );
 
@@ -169,7 +193,15 @@ function UserModal(props) {
 
   return (
     <Modal
-      {...props}
+      show={props.show}
+      onHide={props.onHide}
+      onSubmit={event => {
+        if (props.version) {
+          props.onRegister(event);
+        } else {
+          props.onLogin(event);
+        }
+      }}
       size="sm"
       aria-labelledby="contained-modal-title-vcenter"
       centered

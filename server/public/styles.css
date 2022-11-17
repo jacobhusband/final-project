@@ -136,6 +136,10 @@ img {
   margin-bottom: 0;
 }
 
+button.font-monospace {
+  font-size: 0.85rem;
+}
+
 .home-page .container.outer {
   padding: 0;
 }
