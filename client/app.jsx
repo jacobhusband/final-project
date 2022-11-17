@@ -17,7 +17,8 @@ export default class App extends React.Component {
       preImageUrl: null,
       postImageUrl: null,
       runId: null,
-      userLogin: null
+      userLogin: null,
+      checkedForLogin: false
     };
     this.savePreImage = this.savePreImage.bind(this);
     this.savePostImage = this.savePostImage.bind(this);
@@ -29,6 +30,8 @@ export default class App extends React.Component {
   updateUserLogin(userLogin) {
     this.setState({
       userLogin
+    }, () => {
+      localStorage.setItem('userLogin', JSON.stringify(userLogin));
     });
   }
 
@@ -77,9 +80,14 @@ export default class App extends React.Component {
         route
       });
     });
+    this.setState({
+      userLogin: JSON.parse(localStorage.getItem('userLogin')),
+      checkedForLogin: true
+    });
   }
 
   renderPage() {
+    if (!this.state.checkedForLogin) return;
     const { route } = this.state;
     if (route.path === '') {
       return <Splash updateUserLogin={this.updateUserLogin} userLogin={this.state.userLogin} />;

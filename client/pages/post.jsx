@@ -27,7 +27,8 @@ export default class Post extends React.Component {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Access-Token': this.props.token
       },
       body: JSON.stringify(newPostInfo)
     };

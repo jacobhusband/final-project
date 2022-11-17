@@ -33,7 +33,8 @@ export default class Stats extends React.Component {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Access-Token': this.props.token
         },
         body: JSON.stringify({ preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace })
       };
