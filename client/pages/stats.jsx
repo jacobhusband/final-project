@@ -33,11 +33,12 @@ export default class Stats extends React.Component {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Access-Token': this.props.login.token
         },
         body: JSON.stringify({ preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace })
       };
-      fetch('/api/runs', details).then(result => result.json()).then(data => {
+      fetch(`/api/run/${this.props.login.user.accountId}`, details).then(result => result.json()).then(data => {
         if (event.target.textContent === 'Save') {
           this.setState({
             redirect: 'saved'

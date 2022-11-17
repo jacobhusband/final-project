@@ -5,6 +5,10 @@ p,
 a,
 h4,
 textarea,
+label,
+input,
+small,
+.modal-header,
 .btn {
   font-family: "Josefin Sans", sans-serif;
 }
@@ -130,6 +134,10 @@ img {
   border: none;
   padding: 0.15rem;
   margin-bottom: 0;
+}
+
+button.font-monospace {
+  font-size: 0.85rem;
 }
 
 .home-page .container.outer {

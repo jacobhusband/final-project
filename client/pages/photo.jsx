@@ -43,7 +43,10 @@ export default class Photo extends React.Component {
     form.append('image', image);
     const details = {
       method: 'POST',
-      body: form
+      body: form,
+      headers: {
+        'X-Access-Token': this.props.token
+      }
     };
     fetch('/api/uploads', details)
       .then(res => res.json())

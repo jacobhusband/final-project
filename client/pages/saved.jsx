@@ -15,7 +15,13 @@ export default class Saved extends React.Component {
 
   componentDidMount() {
     this.props.resetSavedImages();
-    fetch('/api/runs').then(result => result.json()).then(runObj => {
+    const details = {
+      method: 'GET',
+      headers: {
+        'X-Access-Token': this.props.login.token
+      }
+    };
+    fetch(`/api/runs/${this.props.login.user.accountId}`, details).then(result => result.json()).then(runObj => {
       this.setState({
         receivedSavedRuns: runObj
       });

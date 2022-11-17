@@ -21,17 +21,17 @@ export default class Post extends React.Component {
   createPost(event) {
     event.preventDefault();
     const caption = event.target.elements.formBasicCaption.value;
-    const runId = this.props.runId;
-    const newPostInfo = { caption, runId, images: this.state.images };
+    const newPostInfo = { caption, images: this.state.images };
     const details = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Access-Token': this.props.login.token
       },
       body: JSON.stringify(newPostInfo)
     };
-    fetch('api/posts', details).then(res => res.json()).then(postCreated => {
+    fetch(`api/post/${this.props.runId}`, details).then(res => res.json()).then(postCreated => {
       this.setState({
         postCreated
       });
@@ -91,7 +91,13 @@ export default class Post extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/api/run/${this.props.runId}`).then(result => result.json()).then(runData => {
+    const details = {
+      method: 'GET',
+      headers: {
+        'X-Access-Token': this.props.login.token
+      }
+    };
+    fetch(`/api/run/${this.props.login.user.accountId}/${this.props.runId}`, details).then(result => result.json()).then(runData => {
       const { beforeImageUrl, routeImageUrl, afterImageUrl } = runData;
       const images = ([
         { url: beforeImageUrl, on: true },
