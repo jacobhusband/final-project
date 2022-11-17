@@ -19,10 +19,10 @@ export default class Saved extends React.Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Token': this.props.token
+        'X-Access-Token': this.props.login.token
       }
     };
-    fetch('/api/runs', details).then(result => result.json()).then(runObj => {
+    fetch(`/api/runs/${this.props.login.user.accountId}`, details).then(result => result.json()).then(runObj => {
       this.setState({
         receivedSavedRuns: runObj
       });

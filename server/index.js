@@ -74,14 +74,14 @@ app.post('/api/auth/sign-in', (req, res, next) => {
       if (!user) {
         throw new ClientError(401, 'invalid login');
       }
-      const { userId, hashedPassword } = user;
+      const { accountId, hashedPassword } = user;
       return argon2
         .verify(hashedPassword, password)
         .then(isMatching => {
           if (!isMatching) {
             throw new ClientError(401, 'invalid login');
           }
-          const payload = { userId, username };
+          const payload = { accountId, username };
           const token = jwt.sign(payload, process.env.TOKEN_SECRET);
           res.json({ token, user: payload });
         });
@@ -95,9 +95,21 @@ app.get('/api/runs', (req, res, next) => {
   const sql = `
   select *
   from "runs"
-  where "accountId" = $1;
   `;
-  const params = ['1'];
+  db.query(sql)
+    .then(result => {
+      res.status(201).json(result.rows);
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/runs/:accountId', (req, res, next) => {
+  const sql = `
+  select *
+  from "runs"
+  where "accountId" = $1
+  `;
+  const params = [req.params.accountId];
   db.query(sql, params)
     .then(result => {
       res.status(201).json(result.rows);
@@ -113,14 +125,14 @@ app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
   }
 });
 
-app.get('/api/run/:runId', (req, res, next) => {
+app.get('/api/run/:accountId/:runId', (req, res, next) => {
   const sql = `
   select *
   from "runs"
   where "accountId" = $1 AND
         "runId" = $2;
   `;
-  const params = ['1', req.params.runId];
+  const params = [req.params.accountId, req.params.runId];
   db.query(sql, params)
     .then(result => {
       res.status(201).json(result.rows[0]);
@@ -128,7 +140,7 @@ app.get('/api/run/:runId', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/api/runs', (req, res, next) => {
+app.post('/api/run/:accountId', (req, res, next) => {
   const { preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace } = req.body;
 
   if (preImageUrl === undefined || postImageUrl === undefined || mapImg === undefined || distance === undefined || time === undefined || latlng === undefined || pace === undefined) {
@@ -137,11 +149,11 @@ app.post('/api/runs', (req, res, next) => {
 
   const sql = `
     insert into "public"."runs" ("accountId", "beforeImageUrl", "afterImageUrl", "routeImageUrl", "distance", "time", "arrayOfCoords", "pace")
-    values (1, $1, $2, $3, $4, $5, $6, $7)
+    values ($8, $1, $2, $3, $4, $5, $6, $7)
     returning *;
   `;
 
-  const params = [preImageUrl, postImageUrl, mapImg, distance, time, JSON.stringify(latlng), pace];
+  const params = [preImageUrl, postImageUrl, mapImg, distance, time, JSON.stringify(latlng), pace, req.params.accountId];
 
   db.query(sql, params)
     .then(result => {
@@ -150,11 +162,11 @@ app.post('/api/runs', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/api/posts', (req, res, next) => {
+app.post('/api/post/:runId', (req, res, next) => {
 
-  const { caption, runId, images } = req.body;
+  const { caption, images } = req.body;
 
-  if (caption === undefined || runId === undefined || images === undefined) {
+  if (caption === undefined || images === undefined) {
     throw new ClientError(400, 'Missing caption, runId, image order, or image showing.');
   }
 
@@ -164,7 +176,7 @@ app.post('/api/posts', (req, res, next) => {
     returning *;
   `;
 
-  const params = [runId, caption, JSON.stringify(images)];
+  const params = [req.params.runId, caption, JSON.stringify(images)];
 
   db.query(sql, params)
     .then(result => {
@@ -180,7 +192,7 @@ app.get('/api/posts', (req, res, next) => {
     from "posts"
     join "runs" using ("runId")
     join "accounts" using ("accountId")
-    order by "postedAt";
+    order by "postedAt" DESC;
   `;
 
   db.query(sql)

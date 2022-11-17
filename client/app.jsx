@@ -96,19 +96,19 @@ export default class App extends React.Component {
     } else if (route.path === 'home') {
       return <Home token={this.state.userLogin.token} />;
     } else if (route.path === 'prePhoto') {
-      return <Photo to="pre" savePreImage={this.savePreImage} preImageUrl={this.state.preImageUrl} />;
+      return <Photo to="pre" savePreImage={this.savePreImage} preImageUrl={this.state.preImageUrl} token={this.state.userLogin.token} />;
     } else if (route.path === 'warning') {
       return <Warning />;
     } else if (route.path === 'timer') {
       return <Run phase="timer" />;
     } else if (route.path === 'stats') {
-      return <Stats saveRunId={this.saveRunId} preImageUrl={this.state.preImageUrl} postImageUrl={this.state.postImageUrl} token={this.state.userLogin.token} />;
+      return <Stats saveRunId={this.saveRunId} preImageUrl={this.state.preImageUrl} postImageUrl={this.state.postImageUrl} login={this.state.userLogin} />;
     } else if (route.path === 'postPhoto') {
       return <Photo to="post" savePostImage={this.savePostImage} postImageUrl={this.state.postImageUrl} token={this.state.userLogin.token} />;
     } else if (route.path === 'saved') {
-      return <Saved saveRunId={this.saveRunId} resetSavedImages={this.resetSavedImages} token={this.state.userLogin.token} />;
+      return <Saved saveRunId={this.saveRunId} resetSavedImages={this.resetSavedImages} login={this.state.userLogin} />;
     } else if (route.path === 'post') {
-      return <Post runId={this.state.runId} token={this.state.userLogin.token} />;
+      return <Post runId={this.state.runId} login={this.state.userLogin} />;
     }
   }
 
