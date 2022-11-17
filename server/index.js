@@ -115,10 +115,12 @@ app.post('/api/auth/dummy-sign-in', (req, res, next) => {
 app.use(authorizationMiddleware);
 
 app.get('/api/runs', (req, res, next) => {
+
   const sql = `
   select *
   from "runs"
   `;
+
   db.query(sql)
     .then(result => {
       res.status(201).json(result.rows);
@@ -251,6 +253,32 @@ app.get('/api/posts', (req, res, next) => {
   db.query(sql)
     .then(result => {
       res.status(201).json(result.rows);
+    })
+    .catch(err => next(err));
+
+});
+
+app.get('/api/post/:postId', (req, res, next) => {
+  const postId = parseInt(req.params.postId);
+  const accId = req.user.accountId;
+
+  const sql = `
+    select "posts".*, "accountId"
+    from "posts"
+    join "runs" using ("runId")
+    join "accounts" using ("accountId")
+    where "postId" = $1;
+  `;
+
+  const params = [postId];
+
+  db.query(sql, params)
+    .then(result => {
+      if (result.rows[0].accountId === accId) {
+        res.status(201).json(result.rows);
+      } else {
+        throw new ClientError(400, 'Not logged in to the right account');
+      }
     })
     .catch(err => next(err));
 
