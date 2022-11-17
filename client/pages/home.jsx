@@ -13,7 +13,14 @@ export default class Home extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/posts').then(result => result.json()).then(posts => {
+    const details = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Access-Token': this.props.token
+      }
+    };
+    fetch('/api/posts', details).then(result => result.json()).then(posts => {
       this.setState({
         posts
       });

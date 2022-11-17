@@ -7,10 +7,10 @@ export default class Splash extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      phase: 'nonUser',
       modal: false,
       signUp: false,
-      user: null
+      userSignedUp: null,
+      userSignedIn: null
     };
     this.switchModal = this.switchModal.bind(this);
     this.registerUser = this.registerUser.bind(this);
@@ -44,10 +44,11 @@ export default class Splash extends React.Component {
       },
       body: JSON.stringify(info)
     };
-    fetch('/api/auth/sign-in', details).then(res => res.json()).then(user => {
+    fetch('/api/auth/sign-in', details).then(res => res.json()).then(userSignedIn => {
       this.setState({
-        user,
         modal: false
+      }, () => {
+        this.props.updateUserLogin(userSignedIn);
       });
     }).catch(err => console.error(err));
   }
@@ -64,9 +65,9 @@ export default class Splash extends React.Component {
       },
       body: JSON.stringify(info)
     };
-    fetch('/api/auth/sign-up', details).then(res => res.json()).then(user => {
+    fetch('/api/auth/sign-up', details).then(res => res.json()).then(userSignedUp => {
       this.setState({
-        user,
+        userSignedUp,
         modal: false
       });
     }).catch(err => console.error(err));
@@ -96,7 +97,7 @@ export default class Splash extends React.Component {
     let content;
     const home = <FontAwesomeIcon icon={faHome} />;
     const run = <FontAwesomeIcon icon={faPersonRunning} />;
-    if (this.state.phase === 'nonUser') {
+    if (!this.props.userLogin) {
       content = (
         <>
           <Button className='font-monospace' variant="primary" onClick={() => this.switchModal(false)}>
@@ -117,7 +118,7 @@ export default class Splash extends React.Component {
           />
         </>
       );
-    } else if (this.state.phase === 'user') {
+    } else {
       content = (
         <>
           <Button variant="primary" href='#home' type="button">Home {home}</Button>
