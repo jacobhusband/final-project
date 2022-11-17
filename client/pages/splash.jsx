@@ -10,7 +10,8 @@ export default class Splash extends React.Component {
       modal: false,
       signUp: false,
       userSignedUp: null,
-      userSignedIn: null
+      userSignedIn: null,
+      message: null
     };
     this.switchModal = this.switchModal.bind(this);
     this.registerUser = this.registerUser.bind(this);
@@ -18,6 +19,14 @@ export default class Splash extends React.Component {
     this.switchToRegister = this.switchToRegister.bind(this);
     this.switchToLogin = this.switchToLogin.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.removeMessage = this.removeMessage.bind(this);
+    this.loginDemo = this.loginDemo.bind(this);
+  }
+
+  removeMessage() {
+    this.setState({
+      message: true
+    });
   }
 
   switchToRegister() {
@@ -36,6 +45,11 @@ export default class Splash extends React.Component {
     event.preventDefault();
     const { username, password } = event.target.elements;
     const info = { username: username.value, password: password.value };
+    const route = '/api/auth/sign-in';
+    this.login(info, route);
+  }
+
+  login(info, route) {
     const details = {
       method: 'POST',
       headers: {
@@ -44,13 +58,26 @@ export default class Splash extends React.Component {
       },
       body: JSON.stringify(info)
     };
-    fetch('/api/auth/sign-in', details).then(res => res.json()).then(userSignedIn => {
+    fetch(route, details).then(res => res.json()).then(userSignedIn => {
       this.setState({
         modal: false
       }, () => {
-        this.props.updateUserLogin(userSignedIn);
+        if (userSignedIn.error) {
+          this.props.updateUserLogin(null);
+        } else {
+          this.props.updateUserLogin(userSignedIn);
+        }
       });
     }).catch(err => console.error(err));
+  }
+
+  loginDemo() {
+    const info = {
+      username: 'admin',
+      paddword: 'password'
+    };
+    const route = '/api/auth/dummy-sign-in';
+    this.login(info, route);
   }
 
   registerUser(event) {
@@ -97,14 +124,23 @@ export default class Splash extends React.Component {
     let content;
     const home = <FontAwesomeIcon icon={faHome} />;
     const run = <FontAwesomeIcon icon={faPersonRunning} />;
+    const message = this.state.message || this.props.message;
+
+    if (message) {
+      setTimeout(this.removeMessage, 5000);
+    }
+
     if (!this.props.userLogin) {
       content = (
         <>
-          <Button className='font-monospace' variant="primary" onClick={() => this.switchModal(false)}>
+          <Button variant="primary" onClick={() => this.switchModal(false)}>
             Sign In
           </Button>
-          <Button className='font-monospace' variant="primary" onClick={() => this.switchModal(true)}>
+          <Button variant="primary" onClick={() => this.switchModal(true)}>
             Sign Up
+          </Button>
+          <Button variant="primary" onClick={this.loginDemo}>
+            Demo
           </Button>
 
           <UserModal
@@ -131,6 +167,7 @@ export default class Splash extends React.Component {
       <div className='background-container'>
         <div className='radial-gradient-overlay'>
           <h1 className='text-light text-center mt-5 fw-bold'>RunnerFuze</h1>
+          {message}
           <div className='buttons d-flex flex-column mx-auto mt-5 gap-3'>
             {content}
           </div>

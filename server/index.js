@@ -89,6 +89,29 @@ app.post('/api/auth/sign-in', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/api/auth/dummy-sign-in', (req, res, next) => {
+  const { username } = req.body;
+
+  const sql = `
+    select "accountId",
+           "hashedPassword"
+      from "accounts"
+     where "username" = $1
+  `;
+
+  const params = [username];
+
+  db.query(sql, params)
+    .then(result => {
+      const [user] = result.rows;
+      const { accountId } = user;
+      const payload = { accountId, username };
+      const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+      res.json({ token, user: payload });
+    })
+    .catch(err => next(err));
+});
+
 app.use(authorizationMiddleware);
 
 app.get('/api/runs', (req, res, next) => {
