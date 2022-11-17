@@ -8,6 +8,8 @@ import Warning from './pages/warning';
 import Stats from './pages/stats';
 import Saved from './pages/saved';
 import Post from './pages/post';
+import redirect from './lib/redirect';
+import AppContext from './lib/app-context';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -18,13 +20,17 @@ export default class App extends React.Component {
       postImageUrl: null,
       runId: null,
       userLogin: null,
-      checkedForLogin: false
+      checkedForLogin: false,
+      signedOut: false,
+      infoIncorrect: false
     };
     this.savePreImage = this.savePreImage.bind(this);
     this.savePostImage = this.savePostImage.bind(this);
     this.resetSavedImages = this.resetSavedImages.bind(this);
     this.saveRunId = this.saveRunId.bind(this);
     this.updateUserLogin = this.updateUserLogin.bind(this);
+    this.resetUserLogin = this.resetUserLogin.bind(this);
+    this.checkForLogin = this.checkForLogin.bind(this);
   }
 
   updateUserLogin(userLogin) {
@@ -32,6 +38,28 @@ export default class App extends React.Component {
       userLogin
     }, () => {
       localStorage.setItem('userLogin', JSON.stringify(userLogin));
+      if (this.state.userLogin === null) {
+        this.setState({
+          infoIncorrect: true
+        });
+      } else {
+        this.setState({
+          infoIncorrect: false
+        });
+      }
+    });
+  }
+
+  resetUserLogin() {
+    const route = Object.assign({}, this.state.route);
+    route.path = '';
+    redirect({ to: '' });
+    localStorage.setItem('userLogin', null);
+    this.setState({
+      userLogin: null,
+      checkedForLogin: false,
+      signedOut: true,
+      route
     });
   }
 
@@ -80,17 +108,37 @@ export default class App extends React.Component {
         route
       });
     });
+    this.checkForLogin();
+  }
+
+  checkForLogin() {
     this.setState({
       userLogin: JSON.parse(localStorage.getItem('userLogin')),
-      checkedForLogin: true
+      checkedForLogin: true,
+      signedOut: false
     });
+  }
+
+  componentDidUpdate() {
+    if (this.state.signedOut) {
+      this.checkForLogin();
+    }
   }
 
   renderPage() {
     if (!this.state.checkedForLogin) return;
+
+    const message = (this.state.infoIncorrect)
+      ? (
+        <p className='text-center text-light'>The information entered was incorrect</p>
+        )
+      : (
+          null
+        );
+
     const { route } = this.state;
     if (route.path === '') {
-      return <Splash updateUserLogin={this.updateUserLogin} userLogin={this.state.userLogin} />;
+      return <Splash updateUserLogin={this.updateUserLogin} userLogin={this.state.userLogin} message={message} />;
     } else if (route.path === 'run') {
       return <Run phase="preImage" />;
     } else if (route.path === 'home') {
@@ -114,9 +162,9 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <>
+      <AppContext.Provider value={this.resetUserLogin}>
         {this.renderPage()}
-      </>
+      </AppContext.Provider>
     );
   }
 }
