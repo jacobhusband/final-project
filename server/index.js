@@ -105,7 +105,7 @@ app.get('/api/runs', (req, res, next) => {
 
 app.get('/api/runs/:accountId', (req, res, next) => {
 
-  if (req.params.accountId !== req.user.accountId) {
+  if (parseInt(req.params.accountId) !== req.user.accountId) {
     throw new ClientError(400, 'accountId posted for does not match user accountId');
   }
 
@@ -134,7 +134,7 @@ app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
 
 app.get('/api/run/:accountId/:runId', (req, res, next) => {
 
-  if (req.params.accountId !== req.user.accountId) {
+  if (parseInt(req.params.accountId) !== req.user.accountId) {
     throw new ClientError(400, 'accountId posted for does not match user accountId');
   }
 
@@ -156,7 +156,7 @@ app.get('/api/run/:accountId/:runId', (req, res, next) => {
 app.post('/api/run/:accountId', (req, res, next) => {
   const { preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace } = req.body;
 
-  if (req.params.accountId !== req.user.accountId) {
+  if (parseInt(req.params.accountId) !== req.user.accountId) {
     throw new ClientError(400, 'accountId posted for does not match user accountId');
   }
 
