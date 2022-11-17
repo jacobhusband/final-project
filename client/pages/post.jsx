@@ -94,7 +94,6 @@ export default class Post extends React.Component {
     const details = {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'X-Access-Token': this.props.login.token
       }
     };

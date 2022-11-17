@@ -16,7 +16,6 @@ export default class Home extends React.Component {
     const details = {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'X-Access-Token': this.props.token
       }
     };

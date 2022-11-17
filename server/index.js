@@ -104,12 +104,19 @@ app.get('/api/runs', (req, res, next) => {
 });
 
 app.get('/api/runs/:accountId', (req, res, next) => {
+
+  if (req.params.accountId !== req.user.accountId) {
+    throw new ClientError(400, 'accountId posted for does not match user accountId');
+  }
+
   const sql = `
   select *
   from "runs"
   where "accountId" = $1
   `;
+
   const params = [req.params.accountId];
+
   db.query(sql, params)
     .then(result => {
       res.status(201).json(result.rows);
@@ -126,12 +133,18 @@ app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
 });
 
 app.get('/api/run/:accountId/:runId', (req, res, next) => {
+
+  if (req.params.accountId !== req.user.accountId) {
+    throw new ClientError(400, 'accountId posted for does not match user accountId');
+  }
+
   const sql = `
   select *
   from "runs"
   where "accountId" = $1 AND
         "runId" = $2;
   `;
+
   const params = [req.params.accountId, req.params.runId];
   db.query(sql, params)
     .then(result => {
@@ -142,6 +155,10 @@ app.get('/api/run/:accountId/:runId', (req, res, next) => {
 
 app.post('/api/run/:accountId', (req, res, next) => {
   const { preImageUrl, postImageUrl, mapImg, distance, time, latlng, pace } = req.body;
+
+  if (req.params.accountId !== req.user.accountId) {
+    throw new ClientError(400, 'accountId posted for does not match user accountId');
+  }
 
   if (preImageUrl === undefined || postImageUrl === undefined || mapImg === undefined || distance === undefined || time === undefined || latlng === undefined || pace === undefined) {
     throw new ClientError(400, 'Missing one of the images, distance, time, or coordinates');
@@ -170,15 +187,28 @@ app.post('/api/post/:runId', (req, res, next) => {
     throw new ClientError(400, 'Missing caption, runId, image order, or image showing.');
   }
 
+  const sqlVerify = `
+    select "accountId"
+    from "posts"
+    join "runs" using ("runId")
+    join "accounts" using ("accountId")
+    where "accountId" = $1 AND
+          "runId" = $2;
+  `;
+
+  const paramsVerify = [req.user.accountId, req.params.runId];
+
   const sql = `
     insert into "public"."posts" ("runId", "caption", "images")
     values ($1, $2, $3)
     returning *;
   `;
-
   const params = [req.params.runId, caption, JSON.stringify(images)];
 
-  db.query(sql, params)
+  db.query(sqlVerify, paramsVerify)
+    .then(result => {
+      return db.query(sql, params);
+    })
     .then(result => {
       res.status(201).json(result.rows[0]);
     })
