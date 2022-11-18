@@ -67,11 +67,11 @@ export default class Home extends React.Component {
       ];
 
       return (
-        <Container className="outer" key={postData.postId}>
+        <Container className="outer" key={postData.postId} runid={postData.runId} postid={postData.postId}>
           <div className='d-flex'>
             <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
             <div className='ms-auto dropdown-ellipsis align-self-center me-3'>
-              <DropdownCustom ellipsis={ellipsis} options={options} />
+              <DropdownCustom ellipsis={ellipsis} options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} />
             </div>
           </div>
           {carousel}

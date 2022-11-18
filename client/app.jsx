@@ -19,6 +19,7 @@ export default class App extends React.Component {
       preImageUrl: null,
       postImageUrl: null,
       runId: null,
+      postId: null,
       userLogin: null,
       checkedForLogin: false,
       signedOut: false,
@@ -28,6 +29,7 @@ export default class App extends React.Component {
     this.savePostImage = this.savePostImage.bind(this);
     this.resetSavedImages = this.resetSavedImages.bind(this);
     this.saveRunId = this.saveRunId.bind(this);
+    this.savePostId = this.savePostId.bind(this);
     this.updateUserLogin = this.updateUserLogin.bind(this);
     this.resetUserLogin = this.resetUserLogin.bind(this);
     this.checkForLogin = this.checkForLogin.bind(this);
@@ -78,6 +80,12 @@ export default class App extends React.Component {
   saveRunId(runId) {
     this.setState({
       runId
+    });
+  }
+
+  savePostId(postId) {
+    this.setState({
+      postId
     });
   }
 
@@ -142,7 +150,7 @@ export default class App extends React.Component {
     } else if (route.path === 'run') {
       return <Run phase="preImage" />;
     } else if (route.path === 'home') {
-      return <Home login={this.state.userLogin} />;
+      return <Home login={this.state.userLogin} saveRunId={this.saveRunId} savePostId={this.savePostId} />;
     } else if (route.path === 'prePhoto') {
       return <Photo to="pre" savePreImage={this.savePreImage} preImageUrl={this.state.preImageUrl} token={this.state.userLogin.token} />;
     } else if (route.path === 'warning') {
@@ -157,6 +165,8 @@ export default class App extends React.Component {
       return <Saved saveRunId={this.saveRunId} resetSavedImages={this.resetSavedImages} login={this.state.userLogin} />;
     } else if (route.path === 'post') {
       return <Post runId={this.state.runId} login={this.state.userLogin} />;
+    } else if (route.path === 'edit') {
+      return <Post runId={this.state.runId} postId={this.state.postId} login={this.state.userLogin} edit="true" />;
     }
   }
 

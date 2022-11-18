@@ -25,12 +25,19 @@ export default class DropdownCustom extends React.Component {
       </a>
     ));
 
+    const saveRunId = event => {
+      const runId = event.target.closest('.container').getAttribute('runid');
+      const postId = event.target.closest('.container').getAttribute('postid');
+      this.props.saveRunId(runId);
+      this.props.savePostId(postId);
+    };
+
     CustomToggle.displayName = 'Ellipsis dropdown';
 
     const items = options.map((option, index) => {
       const { href, text } = option;
       return (
-        <Dropdown.Item key={index} href={href}>{text}</Dropdown.Item>
+        <Dropdown.Item key={index} href={href} onClick={saveRunId}>{text}</Dropdown.Item>
       );
     });
 

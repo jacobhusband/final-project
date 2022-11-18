@@ -263,7 +263,7 @@ app.get('/api/post/:postId', (req, res, next) => {
   const accId = req.user.accountId;
 
   const sql = `
-    select "posts".*, "accountId"
+    select "posts".*, "runs".*, "accountId"
     from "posts"
     join "runs" using ("runId")
     join "accounts" using ("accountId")
@@ -275,7 +275,7 @@ app.get('/api/post/:postId', (req, res, next) => {
   db.query(sql, params)
     .then(result => {
       if (result.rows[0].accountId === accId) {
-        res.status(201).json(result.rows);
+        res.status(201).json(result.rows[0]);
       } else {
         throw new ClientError(400, 'Not logged in to the right account');
       }
