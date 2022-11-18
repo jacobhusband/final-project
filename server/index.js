@@ -366,6 +366,23 @@ app.delete('/api/post/:postId', (req, res, next) => {
 
 });
 
+app.post('/api/like/:postId', (req, res, next) => {
+
+  const sql = `
+    insert into "public"."likes" ("postId", "accountId")
+    values ($1, $2)
+    returning *;
+  `;
+
+  const params = [req.params.postId, req.user.accountId];
+
+  db.query(sql, params)
+    .then(result => {
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
