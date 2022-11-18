@@ -129,8 +129,12 @@ export default class Post extends React.Component {
     if (!this.state.images.length) return;
     if (this.state.postCreated) return <Redirect to="home" />;
 
+    const postId = this.state.runData.postId;
+
+    const exitRef = (postId) ? '#home' : '#saved';
+
     const times = (
-      <Button href="#saved" className="times text-dark">
+      <Button href={exitRef} className="times text-dark">
         <div className='times-icon position-relative'>
           <FontAwesomeIcon icon={faTimes} size="xl" />
         </div>
@@ -151,9 +155,9 @@ export default class Post extends React.Component {
 
     const result = formatDistance(then, now, { includeSeconds: true, addSuffix: true });
 
-    const title = (this.state.runData.postId) ? 'Edit Post' : 'New Post';
+    const title = (postId) ? 'Edit Post' : 'New Post';
 
-    const form = (this.state.runData.postId)
+    const form = (postId)
       ? (
         <Form onSubmit={this.createPost}>
           <Row>

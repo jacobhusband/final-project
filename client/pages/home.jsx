@@ -3,8 +3,6 @@ import Navbar from '../components/navbar';
 import RunInfo from '../components/runInfo';
 import { Container, Carousel } from 'react-bootstrap';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import DropdownCustom from '../components/dropdown';
 
 export default class Home extends React.Component {
@@ -31,7 +29,6 @@ export default class Home extends React.Component {
 
   render() {
     if (!this.state.posts) return;
-    const username = this.props.login.user.username;
 
     let imgSrc, postData;
     const posts = this.state.posts.map((post, index) => {
@@ -50,10 +47,6 @@ export default class Home extends React.Component {
       });
       carouselItems = carouselItems.filter(x => x !== null);
 
-      const ellipsis = (username === postData.username)
-        ? <FontAwesomeIcon icon={faEllipsis} size="xl" />
-        : null;
-
       const carousel = (carouselItems.length !== 1)
         ? <Carousel interval={null}>{carouselItems}</Carousel>
         : <div className='single-image-post'><img src={imgSrc} /></div>;
@@ -71,7 +64,7 @@ export default class Home extends React.Component {
           <div className='d-flex'>
             <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
             <div className='ms-auto dropdown-ellipsis align-self-center me-3'>
-              <DropdownCustom ellipsis={ellipsis} options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} />
+              <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} />
             </div>
           </div>
           {carousel}

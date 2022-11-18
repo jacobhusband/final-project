@@ -1,6 +1,4 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import Stack from 'react-bootstrap/Stack';
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import DropdownCustom from '../components/dropdown';
@@ -32,10 +30,10 @@ export default class Saved extends React.Component {
   render() {
     if (!this.state.receivedSavedRuns) return;
 
-    const ellipsisV = <FontAwesomeIcon icon={faEllipsisV} size="xl" />;
     const options = [
       { href: '#home', text: 'Home' }
     ];
+
     const listItems = this.state.receivedSavedRuns.map(savedRun => {
       return <CreateSavedRunLi key={savedRun.runId} savedRun={savedRun} saveRunId={this.props.saveRunId} />;
     });
@@ -43,7 +41,7 @@ export default class Saved extends React.Component {
     return (
       <div className='saved-runs'>
         <div className="text-end p-3 border-bottom border-secondary">
-          <DropdownCustom ellipsis={ellipsisV} options={options} />
+          <DropdownCustom direction="vertical" options={options} />
         </div>
         <Stack>
           {listItems}
