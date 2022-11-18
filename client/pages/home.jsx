@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../components/navbar';
 import RunInfo from '../components/runInfo';
-import { Container, Carousel } from 'react-bootstrap';
+import { Container, Carousel, Modal, Button } from 'react-bootstrap';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import DropdownCustom from '../components/dropdown';
 
@@ -9,8 +9,46 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: null
+      posts: null,
+      modalShowing: false
     };
+    this.removePost = this.removePost.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+  }
+
+  hideModal() {
+    this.setState({
+      modalShowing: false
+    });
+  }
+
+  showModal() {
+    this.setState({
+      modalShowing: true
+    });
+  }
+
+  updatePosts() {
+    let posts = this.state.posts;
+    posts = posts.filter(x => x.postId !== parseInt(this.props.postId));
+    this.setState({
+      posts
+    });
+  }
+
+  removePost() {
+    const postId = this.props.postId;
+    const details = {
+      method: 'DELETE',
+      headers: {
+        'X-Access-Token': this.props.login.token
+      }
+    };
+    fetch(`/api/post/${postId}`, details).then(result => result.json()).then(post => {
+      this.hideModal();
+      this.updatePosts();
+    }).catch(err => console.error(err));
   }
 
   componentDidMount() {
@@ -30,7 +68,12 @@ export default class Home extends React.Component {
   render() {
     if (!this.state.posts) return;
 
+    const options = [
+      { href: '#edit', text: 'Edit' },
+      { href: '#home', text: 'Remove' }
+    ];
     let imgSrc, postData;
+
     const posts = this.state.posts.map((post, index) => {
       postData = post;
       let carouselItems = post.images.map(image => {
@@ -45,7 +88,16 @@ export default class Home extends React.Component {
           return null;
         }
       });
+
       carouselItems = carouselItems.filter(x => x !== null);
+
+      const dropdown = (postData.accountId === this.props.login.user.accountId)
+        ? (
+          <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} showModal={this.showModal} />
+          )
+        : (
+            null
+          );
 
       const carousel = (carouselItems.length !== 1)
         ? <Carousel interval={null}>{carouselItems}</Carousel>
@@ -55,16 +107,12 @@ export default class Home extends React.Component {
       const then = new Date(postData.postedAt);
       const result = formatDistanceStrict(then, now, { includeSeconds: true, addSuffix: true });
 
-      const options = [
-        { href: '#edit', text: 'Edit' }
-      ];
-
       return (
         <Container className="outer" key={postData.postId} runid={postData.runId} postid={postData.postId}>
           <div className='d-flex'>
             <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
             <div className='ms-auto dropdown-ellipsis align-self-center me-3'>
-              <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} />
+              {dropdown}
             </div>
           </div>
           {carousel}
@@ -86,7 +134,39 @@ export default class Home extends React.Component {
       <div className="home-page" >
         <Navbar />
         {posts}
+        <RemovePostModal
+          show={this.state.modalShowing}
+          onHide={this.hideModal}
+          confirm={this.removePost}
+        />
       </div>
     );
   }
+}
+
+function RemovePostModal(props) {
+  return (
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Remove Post
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>
+          Are you sure you want to remove this post? This action cannot be undone.
+        </p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger" onClick={props.confirm}>Delete</Button>
+        <Button variant="secondary" onClick={props.onHide}>Cancel</Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }

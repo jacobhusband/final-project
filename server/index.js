@@ -331,6 +331,41 @@ app.put('/api/post/:postId', (req, res, next) => {
 
 });
 
+app.delete('/api/post/:postId', (req, res, next) => {
+
+  const postId = parseInt(req.params.postId);
+  const accId = req.user.accountId;
+
+  const sqlVerify = `
+    select "accountId"
+    from "posts"
+    join "runs" using ("runId")
+    join "accounts" using ("accountId")
+    where "accountId" = $1 AND
+          "postId" = $2;
+  `;
+
+  const paramsVerify = [accId, postId];
+
+  const sql = `
+    delete from "posts"
+    where "postId" = $1
+    returning *;
+  `;
+
+  const params = [postId];
+
+  db.query(sqlVerify, paramsVerify)
+    .then(result => {
+      return db.query(sql, params);
+    })
+    .then(result => {
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+
+});
+
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
