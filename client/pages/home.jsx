@@ -29,6 +29,14 @@ export default class Home extends React.Component {
     });
   }
 
+  updatePosts() {
+    let posts = this.state.posts;
+    posts = posts.filter(x => x.postId !== parseInt(this.props.postId));
+    this.setState({
+      posts
+    });
+  }
+
   removePost() {
     const postId = this.props.postId;
     const details = {
@@ -39,11 +47,11 @@ export default class Home extends React.Component {
     };
     fetch(`/api/post/${postId}`, details).then(result => result.json()).then(post => {
       this.hideModal();
-      this.getPosts();
+      this.updatePosts();
     }).catch(err => console.error(err));
   }
 
-  getPosts() {
+  componentDidMount() {
     const details = {
       method: 'GET',
       headers: {
@@ -55,10 +63,6 @@ export default class Home extends React.Component {
         posts
       });
     }).catch(err => console.error(err));
-  }
-
-  componentDidMount() {
-    this.getPosts();
   }
 
   render() {
