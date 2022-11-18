@@ -142,7 +142,7 @@ export default class App extends React.Component {
     } else if (route.path === 'run') {
       return <Run phase="preImage" />;
     } else if (route.path === 'home') {
-      return <Home token={this.state.userLogin.token} />;
+      return <Home login={this.state.userLogin} />;
     } else if (route.path === 'prePhoto') {
       return <Photo to="pre" savePreImage={this.savePreImage} preImageUrl={this.state.preImageUrl} token={this.state.userLogin.token} />;
     } else if (route.path === 'warning') {
