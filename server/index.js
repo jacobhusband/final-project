@@ -284,6 +284,53 @@ app.get('/api/post/:postId', (req, res, next) => {
 
 });
 
+app.put('/api/post/:postId', (req, res, next) => {
+
+  const { caption, images } = req.body;
+
+  if (caption === undefined || images === undefined) {
+    throw new ClientError(400, 'Missing caption, runId, image order, or image showing.');
+  }
+
+  if (images.length !== 3) {
+    throw new ClientError(400, 'Incorrect amount of image objects');
+  }
+
+  const postId = parseInt(req.params.postId);
+  const accId = req.user.accountId;
+
+  const sqlVerify = `
+    select "accountId"
+    from "posts"
+    join "runs" using ("runId")
+    join "accounts" using ("accountId")
+    where "accountId" = $1 AND
+          "postId" = $2;
+  `;
+
+  const paramsVerify = [accId, postId];
+
+  const sql = `
+    update "posts"
+       set "caption" = $1,
+           "images" = $2
+     where "postId" = $3
+     returning *;
+  `;
+
+  const params = [caption, JSON.stringify(images), postId];
+
+  db.query(sqlVerify, paramsVerify)
+    .then(result => {
+      return db.query(sql, params);
+    })
+    .then(result => {
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+
+});
+
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
