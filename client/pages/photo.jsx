@@ -10,7 +10,7 @@ import Redirect from '../components/redirect';
 
 const videoConstraints = {
   width: `${window.innerWidth}`,
-  height: `${window.innerHeight * 0.66}`
+  height: `${window.innerWidth * 0.66}`
 };
 const camera = <FontAwesomeIcon icon={faCamera} />;
 const swap = <FontAwesomeIcon icon={faRotate} />;
@@ -129,10 +129,10 @@ export default class Photo extends React.Component {
     }
 
     return (
-      <div className='text-center'>
+      <div className='photo-page text-center'>
         <Navbar home={this.props.home} />
         {headerText}
-        <div className='camera-container'>
+        <div className='container outer'>
           {image}
         </div>
       </div>

@@ -3,6 +3,7 @@ import Navbar from '../components/navbar';
 import RunInfo from '../components/runInfo';
 import { Container, Carousel } from 'react-bootstrap';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
+import DropdownCustom from '../components/dropdown';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ export default class Home extends React.Component {
     const details = {
       method: 'GET',
       headers: {
-        'X-Access-Token': this.props.token
+        'X-Access-Token': this.props.login.token
       }
     };
     fetch('/api/posts', details).then(result => result.json()).then(posts => {
@@ -54,10 +55,17 @@ export default class Home extends React.Component {
       const then = new Date(postData.postedAt);
       const result = formatDistanceStrict(then, now, { includeSeconds: true, addSuffix: true });
 
+      const options = [
+        { href: '#edit', text: 'Edit' }
+      ];
+
       return (
-        <Container className="outer" key={postData.postId}>
-          <div>
+        <Container className="outer" key={postData.postId} runid={postData.runId} postid={postData.postId}>
+          <div className='d-flex'>
             <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
+            <div className='ms-auto dropdown-ellipsis align-self-center me-3'>
+              <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} />
+            </div>
           </div>
           {carousel}
           <RunInfo key={postData.postId} postData={postData} />

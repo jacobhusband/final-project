@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faChevronLeft, faChevronRight, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import formatDistance from 'date-fns/formatDistance';
 import Redirect from '../components/redirect';
+import redirect from '../lib/redirect';
 
 export default class Post extends React.Component {
   constructor(props) {
@@ -22,8 +23,10 @@ export default class Post extends React.Component {
     event.preventDefault();
     const caption = event.target.elements.formBasicCaption.value;
     const newPostInfo = { caption, images: this.state.images };
+    const method = (this.state.runData.postId) ? 'PUT' : 'POST';
+    const id = (this.state.runData.postId) ? this.state.runData.postId : this.state.runData.runId;
     const details = {
-      method: 'POST',
+      method,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -31,7 +34,7 @@ export default class Post extends React.Component {
       },
       body: JSON.stringify(newPostInfo)
     };
-    fetch(`api/post/${this.props.runId}`, details).then(res => res.json()).then(postCreated => {
+    fetch(`api/post/${id}`, details).then(res => res.json()).then(postCreated => {
       this.setState({
         postCreated
       });
@@ -91,24 +94,34 @@ export default class Post extends React.Component {
   }
 
   componentDidMount() {
+    if (!this.props.runId) redirect({ to: 'home' });
     const details = {
       method: 'GET',
       headers: {
         'X-Access-Token': this.props.login.token
       }
     };
-    fetch(`/api/run/${this.props.login.user.accountId}/${this.props.runId}`, details).then(result => result.json()).then(runData => {
-      const { beforeImageUrl, routeImageUrl, afterImageUrl } = runData;
-      const images = ([
-        { url: beforeImageUrl, on: true },
-        { url: routeImageUrl, on: true },
-        { url: afterImageUrl, on: true }
-      ]);
-      this.setState({
-        runData,
-        images
-      });
-    }).catch(err => console.error(err));
+    if (this.props.postId) {
+      fetch(`/api/post/${this.props.postId}`, details).then(d => d.json()).then(data => {
+        this.setState({
+          runData: data,
+          images: data.images
+        });
+      }).catch(err => console.error(err));
+    } else {
+      fetch(`/api/run/${this.props.login.user.accountId}/${this.props.runId}`, details).then(result => result.json()).then(runData => {
+        const { beforeImageUrl, routeImageUrl, afterImageUrl } = runData;
+        const images = ([
+          { url: beforeImageUrl, on: true },
+          { url: routeImageUrl, on: true },
+          { url: afterImageUrl, on: true }
+        ]);
+        this.setState({
+          runData,
+          images
+        });
+      }).catch(err => console.error(err));
+    }
   }
 
   render() {
@@ -116,8 +129,12 @@ export default class Post extends React.Component {
     if (!this.state.images.length) return;
     if (this.state.postCreated) return <Redirect to="home" />;
 
+    const postId = this.state.runData.postId;
+
+    const exitRef = (postId) ? '#home' : '#saved';
+
     const times = (
-      <Button href="#saved" className="times text-dark">
+      <Button href={exitRef} className="times text-dark">
         <div className='times-icon position-relative'>
           <FontAwesomeIcon icon={faTimes} size="xl" />
         </div>
@@ -137,6 +154,48 @@ export default class Post extends React.Component {
     const then = new Date(ranAt);
 
     const result = formatDistance(then, now, { includeSeconds: true, addSuffix: true });
+
+    const title = (postId) ? 'Edit Post' : 'New Post';
+
+    const form = (postId)
+      ? (
+        <Form onSubmit={this.createPost}>
+          <Row>
+            <Col>
+              <Form.Group className="mb-1 mt-1 text-start" controlId="formBasicCaption">
+                <Form.Control as="textarea" defaultValue={this.state.runData.caption} placeholder="enter a description" required rows={5} />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row className='desktop-row medium mt-0'>
+            <Col xs={3} className="text-start mt-1">
+              <Button type="submit">Update</Button>
+            </Col>
+            <Col xs={9}>
+              <p className='mb-1 secondary text-secondary small desktop-hidden text-end'>saved {result}</p>
+            </Col>
+          </Row>
+        </Form>
+        )
+      : (
+        <Form onSubmit={this.createPost}>
+          <Row>
+            <Col>
+              <Form.Group className="mb-1 mt-1 text-start" controlId="formBasicCaption">
+                <Form.Control as="textarea" placeholder="enter a description" required rows={5} />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row className='desktop-row medium mt-0'>
+            <Col xs={3} className="text-start mt-1">
+              <Button type="submit">Post</Button>
+            </Col>
+            <Col xs={9}>
+              <p className='mb-1 secondary text-secondary small desktop-hidden text-end'>saved {result}</p>
+            </Col>
+          </Row>
+        </Form >
+        );
 
     const carouselItems = images.map((obj, index) => {
       const icon = (obj.on) ? minus : plus;
@@ -177,7 +236,7 @@ export default class Post extends React.Component {
           <Row>
             <Col xs={3} md={3} />
             <Col xs={6} md={6} className="text-center mt-3 mb-2">
-              <h3 className='mb-0 mt-0'>New Post</h3>
+              <h3 className='mb-0 mt-0'>{title}</h3>
             </Col>
             <Col xs={2} md={2} className="text-end p-1 mt-2 fw-bold">
               {times}
@@ -198,23 +257,7 @@ export default class Post extends React.Component {
               <p className='mb-0'>{distance} miles {time} time {pace} pace</p>
             </Col>
           </Row>
-          <Form onSubmit={this.createPost}>
-            <Row>
-              <Col>
-                <Form.Group className="mb-1 mt-1 text-start" controlId="formBasicCaption">
-                  <Form.Control as="textarea" placeholder="enter a description" required rows={5} />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row className='desktop-row medium mt-0'>
-              <Col xs={3} className="text-start mt-1">
-                <Button type="submit">Post</Button>
-              </Col>
-              <Col xs={9}>
-                <p className='mb-1 secondary text-secondary small desktop-hidden text-end'>saved {result}</p>
-              </Col>
-            </Row>
-          </Form>
+          {form}
         </Container>
       </div>
     );

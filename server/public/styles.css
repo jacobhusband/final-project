@@ -13,7 +13,8 @@ small,
   font-family: "Josefin Sans", sans-serif;
 }
 
-img {
+img,
+video {
   width: 100%;
 }
 
@@ -204,7 +205,8 @@ button.font-monospace {
 
   .home-page .container.outer,
   .new-post .container.outer,
-  .home-page .navbar .container {
+  .home-page .navbar .container,
+  .photo-page .container.outer {
     max-width: 600px !important;
   }
 
