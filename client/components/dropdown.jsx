@@ -51,9 +51,10 @@ export default class DropdownCustom extends React.Component {
         this.props.saveRunId(runId);
         this.props.savePostId(postId);
       }
-      if (this.props.removePost) {
+      if (this.props.showModal) {
         const postId = event.target.closest('.container').getAttribute('postid');
-        this.props.removePost(postId);
+        this.props.savePostId(postId);
+        this.props.showModal();
       }
     };
 

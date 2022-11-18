@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../components/navbar';
 import RunInfo from '../components/runInfo';
-import { Container, Carousel } from 'react-bootstrap';
+import { Container, Carousel, Modal, Button } from 'react-bootstrap';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import DropdownCustom from '../components/dropdown';
 
@@ -9,12 +9,28 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: null
+      posts: null,
+      modalShowing: false
     };
     this.removePost = this.removePost.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
   }
 
-  removePost(postId) {
+  hideModal() {
+    this.setState({
+      modalShowing: false
+    });
+  }
+
+  showModal() {
+    this.setState({
+      modalShowing: true
+    });
+  }
+
+  removePost() {
+    const postId = this.props.postId;
     const details = {
       method: 'DELETE',
       headers: {
@@ -22,6 +38,7 @@ export default class Home extends React.Component {
       }
     };
     fetch(`/api/post/${postId}`, details).then(result => result.json()).then(post => {
+      this.hideModal();
       this.getPosts();
     }).catch(err => console.error(err));
   }
@@ -72,7 +89,7 @@ export default class Home extends React.Component {
 
       const dropdown = (postData.accountId === this.props.login.user.accountId)
         ? (
-          <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} removePost={this.removePost} />
+          <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} showModal={this.showModal} />
           )
         : (
             null
@@ -113,7 +130,39 @@ export default class Home extends React.Component {
       <div className="home-page" >
         <Navbar />
         {posts}
+        <RemovePostModal
+          show={this.state.modalShowing}
+          onHide={this.hideModal}
+          confirm={this.removePost}
+        />
       </div>
     );
   }
+}
+
+function RemovePostModal(props) {
+  return (
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Remove Post
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>
+          Are you sure you want to remove this post? This action cannot be undone.
+        </p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="danger" onClick={props.confirm}>Delete</Button>
+        <Button variant="secondary" onClick={props.onHide}>Cancel</Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }
