@@ -11,9 +11,22 @@ export default class Home extends React.Component {
     this.state = {
       posts: null
     };
+    this.removePost = this.removePost.bind(this);
   }
 
-  componentDidMount() {
+  removePost(postId) {
+    const details = {
+      method: 'DELETE',
+      headers: {
+        'X-Access-Token': this.props.login.token
+      }
+    };
+    fetch(`/api/post/${postId}`, details).then(result => result.json()).then(post => {
+      this.getPosts();
+    }).catch(err => console.error(err));
+  }
+
+  getPosts() {
     const details = {
       method: 'GET',
       headers: {
@@ -27,10 +40,19 @@ export default class Home extends React.Component {
     }).catch(err => console.error(err));
   }
 
+  componentDidMount() {
+    this.getPosts();
+  }
+
   render() {
     if (!this.state.posts) return;
 
+    const options = [
+      { href: '#edit', text: 'Edit' },
+      { href: '#home', text: 'Remove' }
+    ];
     let imgSrc, postData;
+
     const posts = this.state.posts.map((post, index) => {
       postData = post;
       let carouselItems = post.images.map(image => {
@@ -45,7 +67,16 @@ export default class Home extends React.Component {
           return null;
         }
       });
+
       carouselItems = carouselItems.filter(x => x !== null);
+
+      const dropdown = (postData.accountId === this.props.login.user.accountId)
+        ? (
+          <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} removePost={this.removePost} />
+          )
+        : (
+            null
+          );
 
       const carousel = (carouselItems.length !== 1)
         ? <Carousel interval={null}>{carouselItems}</Carousel>
@@ -55,16 +86,12 @@ export default class Home extends React.Component {
       const then = new Date(postData.postedAt);
       const result = formatDistanceStrict(then, now, { includeSeconds: true, addSuffix: true });
 
-      const options = [
-        { href: '#edit', text: 'Edit' }
-      ];
-
       return (
         <Container className="outer" key={postData.postId} runid={postData.runId} postid={postData.postId}>
           <div className='d-flex'>
             <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
             <div className='ms-auto dropdown-ellipsis align-self-center me-3'>
-              <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} />
+              {dropdown}
             </div>
           </div>
           {carousel}

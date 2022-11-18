@@ -44,19 +44,23 @@ export default class DropdownCustom extends React.Component {
   render() {
     const options = this.props.options;
 
-    const saveRunId = event => {
+    const actions = event => {
       if (this.props.saveRunId) {
         const runId = event.target.closest('.container').getAttribute('runid');
         const postId = event.target.closest('.container').getAttribute('postid');
         this.props.saveRunId(runId);
         this.props.savePostId(postId);
       }
+      if (this.props.removePost) {
+        const postId = event.target.closest('.container').getAttribute('postid');
+        this.props.removePost(postId);
+      }
     };
 
     const items = options.map((option, index) => {
       const { href, text } = option;
       return (
-        <Dropdown.Item key={index} href={href} onClick={saveRunId}>{text}</Dropdown.Item>
+        <Dropdown.Item key={index} href={href} onClick={actions}>{text}</Dropdown.Item>
       );
     });
 
