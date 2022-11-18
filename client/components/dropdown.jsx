@@ -1,6 +1,8 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 
+// Change aspect ratio of images to match the post aspect ratio so that there are not cut offs on faces
+
 export default class DropdownCustom extends React.Component {
 
   render() {
