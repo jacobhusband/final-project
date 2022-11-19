@@ -266,7 +266,9 @@ app.get('/api/posts', (req, res, next) => {
       return db.query(sql2);
     })
     .then(result2 => {
-      const joinedResult = Object.assign({}, firstResult.rows[0], result2.rows[0]);
+      const joinedResult = firstResult.rows.map((row, index) => {
+        return Object.assign({}, row, result2.rows[index]);
+      });
       res.status(201).json(joinedResult);
     })
     .catch(err => next(err));

@@ -37,6 +37,17 @@ export default class Like extends React.Component {
     }).catch(err => console.error(err));
   }
 
+  componentDidMount() {
+    for (const like of this.props.likes) {
+      if (like === this.props.username) {
+        this.setState({
+          liked: true
+        });
+        return;
+      }
+    }
+  }
+
   render() {
     const heart = (this.state.liked)
       ? <FontAwesomeIcon icon={faHeart} />
