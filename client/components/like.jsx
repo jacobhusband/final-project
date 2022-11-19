@@ -24,6 +24,7 @@ export default class Like extends React.Component {
     };
     fetch(`/api/like/${postId}`, details).then(res => {
       if (res.status < 400) {
+        this.props.updateLikes();
         if (this.state.liked) {
           this.setState({
             liked: false

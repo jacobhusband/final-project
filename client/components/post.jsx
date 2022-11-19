@@ -6,16 +6,47 @@ import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { Carousel, Container } from 'react-bootstrap';
 
 export default class Post extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      likes: null
+    };
+    this.updateLikes = this.updateLikes.bind(this);
+  }
+
+  updateLikes() {
+    const likes = [...this.state.likes];
+    for (const [index, name] of likes.entries()) {
+      if (this.props.login.user.username === name) {
+        likes.splice(1, index);
+        this.setState({
+          likes
+        });
+        return;
+      }
+    }
+    likes.push(this.props.login.user.username);
+    this.setState({
+      likes
+    });
+  }
+
+  componentDidMount() {
+    this.setState({
+      likes: this.props.postData.likes
+    });
+  }
 
   render() {
+    if (!this.state.likes) return;
 
     const options = [
       { href: '#edit', text: 'Edit' },
       { href: '#home', text: 'Remove' }
     ];
-
-    let imgSrc;
     const postData = this.props.postData;
+    const likes = this.state.likes;
+    let imgSrc;
 
     let carouselItems = postData.images.map(image => {
       if (image.on) {
@@ -30,11 +61,11 @@ export default class Post extends React.Component {
       }
     });
 
-    let likedNames = (postData.likes.length) && `liked by ${postData.likes[0]}`;
+    let likedNames = (likes.length) && `liked by ${likes[0]}`;
 
-    if (postData.likes.length > 1 && postData.likes.length < 5) {
-      for (let i = 1; i < postData.likes.length; i++) {
-        likedNames += `, ${postData.likes[i]}`;
+    if (likes.length > 1 && likes.length < 5) {
+      for (let i = 1; i < likes.length; i++) {
+        likedNames += `, ${likes[i]}`;
       }
     }
 
@@ -69,7 +100,7 @@ export default class Post extends React.Component {
         <Container className='mt-1 mb-3'>
           <div className='icons'>
             <p className='small mb-0 text-secondary'>{likedNames}</p>
-            <Like login={this.props.login} likes={postData.likes} username={postData.username} />
+            <Like onClick={this.updateLikes} login={this.props.login} likes={postData.likes} username={this.props.login.user.username} updateLikes={this.updateLikes} />
           </div>
           <div className='d-flex'>
             <p className='small mb-0'>{postData.username}</p>
