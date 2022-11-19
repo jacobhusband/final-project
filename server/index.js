@@ -242,6 +242,8 @@ app.post('/api/post/:runId', (req, res, next) => {
 
 app.get('/api/posts', (req, res, next) => {
 
+  let firstResult;
+
   const sql = `
     select *
     from "posts"
@@ -250,9 +252,22 @@ app.get('/api/posts', (req, res, next) => {
     order by "postedAt" DESC;
   `;
 
+  const sql2 = `
+    select "posts"."postId", json_agg("username") as "likes"
+    from "posts"
+    join "likes" using ("postId")
+    join "accounts" using ("accountId")
+    group by "posts"."postId";
+  `;
+
   db.query(sql)
     .then(result => {
-      res.status(201).json(result.rows);
+      firstResult = result;
+      return db.query(sql2);
+    })
+    .then(result2 => {
+      const joinedResult = Object.assign({}, firstResult.rows[0], result2.rows[0]);
+      res.status(201).json(joinedResult);
     })
     .catch(err => next(err));
 
@@ -379,6 +394,24 @@ app.post('/api/like/:postId', (req, res, next) => {
   db.query(sql, params)
     .then(result => {
       res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
+app.delete('/api/like/:postId', (req, res, next) => {
+
+  const sql = `
+    delete from "likes"
+    where "postId" = $1 AND
+          "accountId" = $2
+    returning *;
+  `;
+
+  const params = [req.params.postId, req.user.accountId];
+
+  db.query(sql, params)
+    .then(result => {
+      res.status(204).json(result.rows);
     })
     .catch(err => next(err));
 });

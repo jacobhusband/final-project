@@ -4,6 +4,7 @@ import RunInfo from '../components/runInfo';
 import { Container, Carousel, Modal, Button } from 'react-bootstrap';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import DropdownCustom from '../components/dropdown';
+import Like from '../components/like';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -72,6 +73,7 @@ export default class Home extends React.Component {
       { href: '#edit', text: 'Edit' },
       { href: '#home', text: 'Remove' }
     ];
+
     let imgSrc, postData;
 
     const posts = this.state.posts.map((post, index) => {
@@ -118,6 +120,9 @@ export default class Home extends React.Component {
           {carousel}
           <RunInfo key={postData.postId} postData={postData} />
           <Container className='mt-1 mb-3'>
+            <div className='icons'>
+              <Like login={this.props.login} />
+            </div>
             <div className='d-flex'>
               <p className='small mb-0'>{postData.username}</p>
               <p className='small ps-2 mb-0'>{postData.caption}</p>
