@@ -15,27 +15,21 @@ export default class Post extends React.Component {
     this.updateLikes = this.updateLikes.bind(this);
   }
 
-  updateLikes() {
+  updateLikes(liked) {
     const likes = [...this.state.likes];
-    for (const [index, name] of likes.entries()) {
-      if (this.props.login.user.username === name) {
-        likes.splice(1, index);
-        this.setState({
-          likes
-        });
-        return;
-      }
-    }
-    likes.push(this.props.login.user.username);
+    liked
+      ? likes.push(this.props.login.user.username)
+      : likes.splice(likes.indexOf(this.props.login.user.username), 1);
     this.setState({
       likes
     });
   }
 
   componentDidMount() {
+    const likes = (this.props.postData.likes) ? this.props.postData.likes : [];
     this.setState({
       checkedForLikes: true,
-      likes: this.props.postData.likes
+      likes
     });
   }
 
@@ -46,6 +40,7 @@ export default class Post extends React.Component {
       { href: '#edit', text: 'Edit' },
       { href: '#home', text: 'Remove' }
     ];
+
     const postData = this.props.postData;
     const likes = this.state.likes;
     let imgSrc;
@@ -65,7 +60,7 @@ export default class Post extends React.Component {
 
     let likedNames;
 
-    if (likes) {
+    if (likes.length) {
       likedNames = (likes.length) && `liked by ${likes[0]}`;
 
       if (likes.length > 1 && likes.length < 5) {
