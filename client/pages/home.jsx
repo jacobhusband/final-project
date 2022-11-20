@@ -66,7 +66,7 @@ export default class Home extends React.Component {
   render() {
     if (!this.state.posts) return;
 
-    const posts = this.state.posts.map(post => <Post key={post.postId} postData={post} login={this.props.login} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} showModal={this.showModal} />);
+    const posts = this.state.posts.map(post => <Post key={post.postId} postData={post} login={this.props.login} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} showModal={this.showModal} />).sort((a, b) => (a.props.postData.postedAt < b.props.postData.postedAt) ? 1 : -1);
 
     return (
       <div className="home-page" >
