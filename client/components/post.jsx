@@ -67,6 +67,8 @@ export default class Post extends React.Component {
         for (let i = 1; i < likes.length; i++) {
           likedNames += `, ${likes[i]}`;
         }
+      } else {
+        likedNames = `liked by ${likes.length} people`;
       }
     }
 
