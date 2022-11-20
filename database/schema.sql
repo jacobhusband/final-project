@@ -85,7 +85,7 @@ ALTER TABLE "comments" ADD CONSTRAINT "comments_fk0" FOREIGN KEY ("accountId") R
 ALTER TABLE "comments" ADD CONSTRAINT "comments_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("postId");
 
 ALTER TABLE "likes" ADD CONSTRAINT "likes_fk0" FOREIGN KEY ("accountId") REFERENCES "accounts"("accountId");
-ALTER TABLE "likes" ADD CONSTRAINT "likes_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("postId");
+ALTER TABLE "likes" ADD CONSTRAINT "likes_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("postId") ON DELETE CASCADE;
 
 ALTER TABLE "saves" ADD CONSTRAINT "saves_fk0" FOREIGN KEY ("accountId") REFERENCES "accounts"("accountId");
 ALTER TABLE "saves" ADD CONSTRAINT "saves_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("postId");

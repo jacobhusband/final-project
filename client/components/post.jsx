@@ -67,7 +67,7 @@ export default class Post extends React.Component {
         for (let i = 1; i < likes.length; i++) {
           likedNames += `, ${likes[i]}`;
         }
-      } else {
+      } else if (likes.length >= 5) {
         likedNames = `liked by ${likes.length} people`;
       }
     }
@@ -76,7 +76,7 @@ export default class Post extends React.Component {
 
     const dropdown = (postData.accountId === this.props.login.user.accountId)
       ? (
-        <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} showModal={this.showModal} />
+        <DropdownCustom direction="horizontal" options={options} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} showModal={this.props.showModal} />
         )
       : (
           null

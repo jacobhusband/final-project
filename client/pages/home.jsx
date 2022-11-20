@@ -66,7 +66,7 @@ export default class Home extends React.Component {
   render() {
     if (!this.state.posts) return;
 
-    const posts = this.state.posts.map(post => <Post key={post.postId} postData={post} login={this.props.login} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} />);
+    const posts = this.state.posts.map(post => <Post key={post.postId} postData={post} login={this.props.login} saveRunId={this.props.saveRunId} savePostId={this.props.savePostId} showModal={this.showModal} />);
 
     return (
       <div className="home-page" >
