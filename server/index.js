@@ -242,8 +242,6 @@ app.post('/api/post/:runId', (req, res, next) => {
 
 app.get('/api/posts', (req, res, next) => {
 
-  let firstResult;
-
   const sql = `
     select *
     from "posts"
@@ -257,22 +255,33 @@ app.get('/api/posts', (req, res, next) => {
     from "posts"
     join "likes" using ("postId")
     join "accounts" using ("accountId")
+    where "postId" = $1
     group by "posts"."postId";
   `;
 
+  let output;
+  let params;
+
   db.query(sql)
     .then(result => {
-      firstResult = result;
-      return db.query(sql2);
-    })
-    .then(result2 => {
-      const joinedResult = firstResult.rows.map((row, index) => {
-        return Object.assign({}, row, result2.rows[index]);
+      output = [];
+      result.rows.forEach(row => {
+        params = [row.postId];
+        db.query(sql2, params).then(likes => {
+          if (likes.rows.length) {
+            output.push(Object.assign({}, row, likes.rows[0]));
+          } else {
+            output.push(row);
+          }
+        })
+          .then(() => {
+            if (output.length === result.rows.length) {
+              res.status(201).json(output);
+            }
+          })
+          .catch(err => next(err));
       });
-      res.status(201).json(joinedResult);
-    })
-    .catch(err => next(err));
-
+    }).catch(err => next(err));
 });
 
 app.get('/api/post/:postId', (req, res, next) => {

@@ -39,12 +39,14 @@ export default class Like extends React.Component {
   }
 
   componentDidMount() {
-    for (const like of this.props.likes) {
-      if (like === this.props.username) {
-        this.setState({
-          liked: true
-        });
-        return;
+    if (this.props.likes) {
+      for (const like of this.props.likes) {
+        if (like === this.props.username) {
+          this.setState({
+            liked: true
+          });
+          return;
+        }
       }
     }
   }

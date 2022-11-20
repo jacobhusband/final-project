@@ -9,6 +9,7 @@ export default class Post extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      checkedForLikes: false,
       likes: null
     };
     this.updateLikes = this.updateLikes.bind(this);
@@ -33,12 +34,13 @@ export default class Post extends React.Component {
 
   componentDidMount() {
     this.setState({
+      checkedForLikes: true,
       likes: this.props.postData.likes
     });
   }
 
   render() {
-    if (!this.state.likes) return;
+    if (!this.state.checkedForLikes) return;
 
     const options = [
       { href: '#edit', text: 'Edit' },
@@ -61,11 +63,15 @@ export default class Post extends React.Component {
       }
     });
 
-    let likedNames = (likes.length) && `liked by ${likes[0]}`;
+    let likedNames;
 
-    if (likes.length > 1 && likes.length < 5) {
-      for (let i = 1; i < likes.length; i++) {
-        likedNames += `, ${likes[i]}`;
+    if (likes) {
+      likedNames = (likes.length) && `liked by ${likes[0]}`;
+
+      if (likes.length > 1 && likes.length < 5) {
+        for (let i = 1; i < likes.length; i++) {
+          likedNames += `, ${likes[i]}`;
+        }
       }
     }
 
