@@ -60,7 +60,11 @@ export default class Home extends React.Component {
       this.setState({
         posts
       });
+
     }).catch(err => console.error(err));
+    this.setState({
+      posts: []
+    });
   }
 
   render() {
