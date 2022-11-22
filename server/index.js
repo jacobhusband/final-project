@@ -150,8 +150,8 @@ app.get('/api/runs/:accountId', (req, res, next) => {
 });
 
 app.post('/api/uploads', uploadsMiddleware, (req, res, next) => {
-  if (req.file.filename) {
-    res.status(201).json({ url: '/images/' + req.file.filename });
+  if (req.file) {
+    res.status(201).json({ url: req.file.location });
   } else {
     throw new ClientError(500, 'Unexpected error occurred');
   }
