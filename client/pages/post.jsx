@@ -74,7 +74,6 @@ export default class Post extends React.Component {
         images[index + 1] = placeholder;
       }
     }
-
     this.setState({
       images
     });

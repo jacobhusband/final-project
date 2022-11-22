@@ -219,8 +219,9 @@ button.font-monospace {
   }
 
   .home-page .desktop-hidden,
-  .new-post .desktop-hidden {
-    display: none;
+  .new-post .desktop-hidden,
+  .saved-runs .desktop-hidden {
+    display: none !important;
   }
 
   .hidden {
