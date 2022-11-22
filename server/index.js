@@ -240,50 +240,6 @@ app.post('/api/post/:runId', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// app.get('/api/posts', (req, res, next) => {
-
-//   const sql = `
-//     select *
-//     from "posts"
-//     join "runs" using ("runId")
-//     join "accounts" using ("accountId")
-//     order by "postedAt" DESC;
-//   `;
-
-//   const sql2 = `
-//     select "posts"."postId", json_agg("username") as "likes"
-//     from "posts"
-//     join "likes" using ("postId")
-//     join "accounts" using ("accountId")
-//     where "postId" = $1
-//     group by "posts"."postId";
-//   `;
-
-//   let output;
-//   let params;
-
-//   db.query(sql)
-//     .then(result => {
-//       output = [];
-//       result.rows.forEach(row => {
-//         params = [row.postId];
-//         db.query(sql2, params).then(likes => {
-//           if (likes.rows.length) {
-//             output.push(Object.assign({}, row, likes.rows[0]));
-//           } else {
-//             output.push(row);
-//           }
-//         })
-//           .then(() => {
-//             if (output.length === result.rows.length) {
-//               res.status(201).json(output);
-//             }
-//           })
-//           .catch(err => next(err));
-//       });
-//     }).catch(err => next(err));
-// });
-
 app.get('/api/posts', (req, res, next) => {
 
   const sql = `
