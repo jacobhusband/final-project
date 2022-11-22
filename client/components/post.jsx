@@ -9,8 +9,7 @@ export default class Post extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      checkedForLikes: false,
-      likes: null
+      likes: (this.props.postData.likes) ? this.props.postData.likes : []
     };
     this.updateLikes = this.updateLikes.bind(this);
   }
@@ -25,16 +24,7 @@ export default class Post extends React.Component {
     });
   }
 
-  componentDidMount() {
-    const likes = (this.props.postData.likes) ? this.props.postData.likes : [];
-    this.setState({
-      checkedForLikes: true,
-      likes
-    });
-  }
-
   render() {
-    if (!this.state.checkedForLikes) return;
 
     const options = [
       { href: '#edit', text: 'Edit' },
@@ -93,7 +83,7 @@ export default class Post extends React.Component {
     return (
       <Container className="outer" key={postData.postId} runid={postData.runId} postid={postData.postId}>
         <div className='d-flex'>
-          <p className='desktop-username m-2 mb-1 ps-3'>{postData.username}</p>
+          <p className='desktop-username m-2 mb-1 ps-3'>{postData.account.username}</p>
           <div className='ms-auto dropdown-ellipsis align-self-center me-3'>
             {dropdown}
           </div>
@@ -103,10 +93,10 @@ export default class Post extends React.Component {
         <Container className='mt-1 mb-3'>
           <div className='icons'>
             <p className='small mb-0 text-secondary'>{likedNames}</p>
-            <Like onClick={this.updateLikes} login={this.props.login} likes={postData.likes} username={this.props.login.user.username} updateLikes={this.updateLikes} />
+            <Like postid={postData.postId} onClick={this.updateLikes} login={this.props.login} likes={postData.likes} username={this.props.login.user.username} updateLikes={this.updateLikes} />
           </div>
           <div className='d-flex'>
-            <p className='small mb-0'>{postData.username}</p>
+            <p className='small mb-0'>{postData.account.username}</p>
             <p className='small ps-2 mb-0'>{postData.caption}</p>
           </div>
           <div>

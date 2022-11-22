@@ -14,7 +14,12 @@ export default class Like extends React.Component {
   }
 
   likeOrUnlikePost(event) {
-    const postId = event.target.closest('.outer.container').getAttribute('postId');
+    const target = (event.target.tagName === 'path')
+      ? event.target.parentElement.parentElement
+      : (event.target.tagName === 'svg')
+          ? event.target.parentElement
+          : event.target;
+    const postId = target.getAttribute('postid');
     const method = (this.state.liked) ? 'DELETE' : 'POST';
     const details = {
       method,
@@ -24,20 +29,11 @@ export default class Like extends React.Component {
     };
     fetch(`/api/like/${postId}`, details).then(res => {
       if (res.status < 400) {
-
-        if (this.state.liked) {
-          this.setState({
-            liked: false
-          }, () => {
-            this.props.updateLikes(this.state.liked);
-          });
-        } else {
-          this.setState({
-            liked: true
-          }, () => {
-            this.props.updateLikes(this.state.liked);
-          });
-        }
+        this.setState({
+          liked: !this.state.liked
+        }, () => {
+          this.props.updateLikes(this.state.liked);
+        });
       }
     }).catch(err => console.error(err));
   }
@@ -61,7 +57,7 @@ export default class Like extends React.Component {
       : <FontAwesomeIcon icon={farHeart} />;
 
     return (
-      <Button variant="link" className='p-0 m-0 text-dark' onClick={this.likeOrUnlikePost}>{heart}</Button>
+      <Button variant="link" postid={this.props.postid} className='p-0 m-0 text-dark' onClick={this.likeOrUnlikePost}>{heart}</Button>
     );
   }
 }
