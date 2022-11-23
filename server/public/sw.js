@@ -56,7 +56,3 @@ self.addEventListener('fetch', event => {
     );
   }
 });
-
-caches.keys().then(function (names) {
-  for (const name of names) { caches.delete(name); }
-});
