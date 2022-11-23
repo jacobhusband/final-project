@@ -96,18 +96,9 @@ export default class Tracker extends React.Component {
         newArr.push(newPos);
         return newArr;
       });
-      // Use pretend coordinates for now
-      // update('latlng', arr => {
-      //   const newArr = [
-      //     { lat: 34.052235, lng: -118.243683, time: 0 },
-      //     { lat: 37.774929, lng: -122.419418, time: 100000 }
-      //   ];
-      //   return newArr;
-      // });
     }, err => console.error(err),
     {
       enableHighAccuracy: true,
-      timeout: 2500,
       maximumAge: 0
     });
   }

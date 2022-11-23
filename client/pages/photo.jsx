@@ -9,9 +9,9 @@ import Button from 'react-bootstrap/Button';
 import Redirect from '../components/redirect';
 
 const videoConstraints = {
-  width: `${window.innerWidth}`,
-  height: `${window.innerWidth * 0.66}`
+  height: `${window.innerWidth}`
 };
+
 const camera = <FontAwesomeIcon icon={faCamera} />;
 const swap = <FontAwesomeIcon icon={faRotate} />;
 const check = <FontAwesomeIcon icon={faCheck} />;

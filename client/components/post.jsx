@@ -9,7 +9,7 @@ export default class Post extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      likes: (this.props.postData.likes) ? this.props.postData.likes : []
+      likes: (this.props.postData.likes[0]) ? this.props.postData.likes : []
     };
     this.updateLikes = this.updateLikes.bind(this);
   }
