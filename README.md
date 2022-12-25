@@ -31,3 +31,11 @@ I wanted to build this app because I thought it would be fun to be able to see r
 - User can sign up
 - User can sign in
 - User can sign out
+
+## Demonstration
+
+Posting  
+![post](https://github.com/jacobhusband/final-project/blob/main/post.gif)  
+  
+Editing and Liking  
+![edit and like](https://github.com/jacobhusband/final-project/blob/main/edit_like.gif)  
