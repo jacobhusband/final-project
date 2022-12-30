@@ -17,7 +17,6 @@ I wanted to build this app because I thought it would be fun to be able to see r
 - CSS
 - HTML
 - [React Bootstrap](https://react-bootstrap.github.io/)
-- SASS
 
 ## Features
 
